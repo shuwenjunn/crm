@@ -1,4 +1,4 @@
-import React, {useState, useImperativeHandle, forwardRef} from 'react';
+import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react';
 import {Drawer, Button, Form, Input, Select, Checkbox, Table} from 'antd';
 
 const FormItem = Form.Item
@@ -14,6 +14,8 @@ const App: React.FC<Iprops> = (props, ref) => {
     const [data, setData] = useState({})
     const [optType, setOptType] = useState('')
     const [columns, setColumns] = useState<any[]>([])
+    const [tableData, setTableData] = useState<any[]>([])
+    const [categoryData, setCategory] = useState<any>({})
 
     const [form] = Form.useForm()
 
@@ -43,7 +45,92 @@ const App: React.FC<Iprops> = (props, ref) => {
     const cataData: any[] = [
         {key: 'class', text: '班级分类', children: ['普通班', 'vip班']},
         {key: 'service', text: '服务分类', children: ['一对一', '多对多', '多对一']},
+        {key: 'school', text: '学校', children: ['北大', '清华', '蓝翔']},
     ]
+
+    useEffect(() => {
+        console.log('casdfaadsasdfasdf', categoryData)
+        let newColumns = []
+        const newData: any = []
+        for (let i in cataData) {
+            if (Object.keys(categoryData).includes(cataData[i].key)) {
+                if (categoryData[cataData[i].key].length > 0) {
+                    newColumns.push({
+                        title: cataData[i].text,
+                        dataIndex: cataData[i].key,
+                    })
+                    newData.push(categoryData[cataData[i].key])
+                }
+            }
+        }
+
+        setColumns(newColumns)
+        const skuData = cartesianProductOf(newData)
+        console.log('skuData----->>', skuData)
+        // const data = []
+        // for (let i in skuData) {
+        //     const obj: any = {
+        //         key: skuData[i].join('&')
+        //     }
+        //     for (let j in skuData[i]) {
+        //         const skuIt = skuData[i][j]
+        //         for (let k in cataData) {
+        //             if (cataData[k].children.includes(skuIt)) {
+        //                 obj[cataData[k].key] = skuIt
+        //             }
+        //         }
+        //     }
+        //     obj.price = (
+        //         <FormItem
+        //             name={`${obj.key}__price`}
+        //             noStyle
+        //         >
+        //             <Input placeholder="价格" type={'number'}/>
+        //         </FormItem>
+        //     )
+        //     obj.count = (
+        //         <FormItem
+        //             name={`${obj.key}__count`}
+        //             noStyle
+        //         >
+        //             <Input placeholder="数量" type={'number'}/>
+        //         </FormItem>
+        //     )
+        //     data.push(obj)
+        // }
+        // console.log('data', data)
+        // setTableData(data)
+    }, [categoryData])
+
+
+    const cartesianProductOf = (array: any) => {
+        if (array.length < 2) return array[0] || [];
+        return [].reduce.call(array, function (col, set) {
+            var res = [];
+            col.forEach(function (c) {
+                set.forEach(function (s) {
+                    var t = [].concat(Array.isArray(c) ? c : [c]);
+                    t.push(s);
+                    res.push(t);
+                })
+            });
+            return res;
+        });
+    }
+
+
+    const onValuesChange = (e: any) => {
+        const data = {
+            ...categoryData,
+            ...e
+        }
+        for (let key in data) {
+            if (data[key].length === 0) {
+                delete data[key]
+            }
+        }
+        setCategory(data)
+    }
 
     return (
         <Drawer
@@ -73,7 +160,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 name="brand"
                 onFinish={onFinish}
                 {...layout}
-                onValuesChange={e=>console.log(e)}
+                onValuesChange={onValuesChange}
             >
 
 
@@ -116,63 +203,21 @@ const App: React.FC<Iprops> = (props, ref) => {
                     >
                         <Input placeholder="统一价" type={'number'}/>
                     </FormItem>
-                    <FormItem
-                        noStyle
-                    >
-                        <Table
-                            size='small'
-                            pagination={false}
-                            dataSource={[
-                                {
-                                    key: '1',
-                                    name: '胡彦斌',
-                                    age: (
-                                        <FormItem
-                                            name="price-1"
-                                            noStyle
-                                        >
-                                            <Input placeholder="价格" type={'number'}/>
-                                        </FormItem>
-                                    ),
-                                    address: (
-                                        <FormItem
-                                            name="number-1"
-                                            noStyle
-                                        >
-                                            <Input placeholder="数量" type={'number'}/>
-                                        </FormItem>
-                                    ),
-                                },
-                            ]}
-                            columns={[
-                                {
-                                    title: '分类1',
-                                    dataIndex: 'name',
-                                    key: 'name',
-                                },
-                                {
-                                    title: '分类2',
-                                    dataIndex: 'aa',
-                                    key: 'aa',
-                                },
-                                {
-                                    title: '分类3',
-                                    dataIndex: 'bb',
-                                    key: 'bb',
-                                },
-                                {
-                                    title: '年龄',
-                                    dataIndex: 'age',
-                                    key: 'age',
-                                },
-                                {
-                                    title: '住址',
-                                    dataIndex: 'address',
-                                    key: 'address',
-                                },
-                            ]}
-                        />
-                    </FormItem>
+                    {columns.length > 0 && (
+                        <FormItem
+                            noStyle
+                        >
+                            <Table
+                                size='small'
+                                pagination={false}
+                                dataSource={tableData}
+                                columns={[...columns, {dataIndex: 'price', title: '价格',}, {
+                                    dataIndex: 'count',
+                                    title: '数量',
+                                }]}
+                            />
+                        </FormItem>
+                    )}
                 </FormItem>
             </Form>
         </Drawer>
