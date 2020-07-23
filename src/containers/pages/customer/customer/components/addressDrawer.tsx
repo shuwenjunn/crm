@@ -48,7 +48,7 @@ const App: React.FC<DrawerProps> = (props, ref) => {
         {
             title: '所在地区',
             dataIndex: 'city',
-            width:100,
+            width:140,
         },
         {
             title: '详细地址',

@@ -34,7 +34,7 @@ const App: React.FC<Iprops> = (props, ref) => {
     }))
 
     const onFinish = (values: any) => {
-
+        console.log('value', values)
     }
 
     const layout = {
@@ -46,6 +46,7 @@ const App: React.FC<Iprops> = (props, ref) => {
         {key: 'class', text: '班级分类', children: ['普通班', 'vip班']},
         {key: 'service', text: '服务分类', children: ['一对一', '多对多', '多对一']},
         {key: 'school', text: '学校', children: ['北大', '清华', '蓝翔']},
+        {key: 'major', text: '专业', children: ['计算机', '化工', '文学']},
     ]
 
     useEffect(() => {
@@ -81,25 +82,15 @@ const App: React.FC<Iprops> = (props, ref) => {
                 }
             }
             obj.price = (
-                <FormItem
-                    name={`${obj.key}__price`}
-                    noStyle
-                >
-                    <Input placeholder="价格" type={'number'}/>
-                </FormItem>
+                <Input placeholder="价格" type={'number'}/>
             )
             obj.count = (
-                <FormItem
-                    name={`${obj.key}__count`}
-                    noStyle
-                >
-                    <Input placeholder="数量" type={'number'}/>
-                </FormItem>
+                <Input placeholder="数量" type={'number'}/>
             )
             data.push(obj)
         }
         console.log('data', data)
-        // setTableData(data)
+        setTableData(data)
     }, [categoryData])
 
 
@@ -208,9 +199,27 @@ const App: React.FC<Iprops> = (props, ref) => {
                                 size='small'
                                 pagination={false}
                                 dataSource={tableData}
-                                columns={[...columns, {dataIndex: 'price', title: '价格',}, {
+                                columns={[...columns, {
+                                    dataIndex: 'price', title: '价格',
+                                    render: (text, record) => (
+                                        <FormItem
+                                            name={`${record.key}__price`}
+                                            style={{marginBottom:0}}
+                                        >
+                                            {text}
+                                        </FormItem>
+                                    )
+                                }, {
                                     dataIndex: 'count',
                                     title: '数量',
+                                    render: (text, record) => (
+                                        <FormItem
+                                            name={`${record.key}__count`}
+                                            style={{marginBottom:0}}
+                                        >
+                                            {text}
+                                        </FormItem>
+                                    )
                                 }]}
                             />
                         </FormItem>

@@ -44,6 +44,11 @@ const Page = () => {
             ...values,
             ...handleRangePicker(values.create_time, 'YYYY-MM-DD HH:mm:ss', 'create_time__gte', 'create_time__lte')
         }
+        for (let key in params) {
+            if (typeof params === 'string') {
+                delete params[key]
+            }
+        }
         // if (params.create_time) {
         //     delete params.create_time
         // }
