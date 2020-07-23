@@ -53,4 +53,17 @@ export const sidebarMenu: MenuElementInterface[] = [
             },
         ],
     },
+    {
+        key: 'goods',
+        name: '商品管理',
+        icon: icons.HomeOutlined,
+        child: [
+            {
+                key: 'goods',
+                name: '商品列表',
+                icon: icons.ClusterOutlined,
+                router: "/goods",
+            },
+        ],
+    },
 ];
