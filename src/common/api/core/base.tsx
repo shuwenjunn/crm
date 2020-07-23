@@ -2,12 +2,12 @@
 
 
 import * as config from '&/config.js';
-import { message } from 'antd';
-import { HttpRequest } from 'common/utils/channel/http';
-import { signatureHelper } from 'common/api/tools';
-import { FieldSetHelper } from 'common/api/fieldSet';
-import { Server } from 'common/api/server'
-
+import {message} from 'antd';
+import {HttpRequest} from 'common/utils/channel/http';
+import {signatureHelper} from 'common/api/tools';
+import {FieldSetHelper} from 'common/api/fieldSet';
+import {Server} from 'common/api/server'
+import {TokenEnum, TokenConstant} from 'common/utils/persistence';
 
 export abstract class BaseApi {
 
@@ -19,34 +19,40 @@ export abstract class BaseApi {
     returnHelper: FieldSetHelper;
     mockData: any;
 
-    constructor(name: string, server: Server, description: string = ""){
+    constructor(name: string, server: Server, description: string = "") {
         this.name = name;
         this.description = description;
         this.parmsHelper = new FieldSetHelper();
-        this.returnHelper= new FieldSetHelper();
+        this.returnHelper = new FieldSetHelper();
         this.server = server;
         this.accessUrl = this._getApiUrl();
     }
 
-    _getApiUrl(): string{
+    _getApiUrl(): string {
         return this.server.url;
     }
-    
-    _generateProtocolHeader(): any{
+
+    _getToken() {
+        return TokenConstant.get() ? TokenConstant.get()[TokenEnum.ACCESS_TOKEN] : undefined
+    }
+
+    _generateProtocolHeader(): any {
+        this._getToken()
         return {
+            'auth': this._getToken(),
             'flag': this.server.flag,
             'api': this.name,
             'timestamp': Date.parse(new Date().toJSON()),
         }
     }
 
-    _parseResponseHeader(response: any): any{
-        let isSuccess: boolean =  response.status === 'ok';
+    _parseResponseHeader(response: any): any {
+        let isSuccess: boolean = response.status === 'ok';
         let result: any;
-        if( isSuccess ){
+        if (isSuccess) {
             result = response.result;
         } else {
-            result =  {
+            result = {
                 code: response.code,
                 msg: response.msg,
             }
@@ -57,31 +63,31 @@ export abstract class BaseApi {
         }
     }
 
-    request(params: any){
+    request(params: any) {
         let requestParms = this.parmsHelper.parse(params)
         let header = this._generateProtocolHeader();
         let request = Object.assign({}, header, requestParms)
         request['sign'] = signatureHelper.getSignature(request)
         console.log("我正在请求服务器")
-        if( config.debug ){
+        if (config.debug) {
             return new Promise(
                 (resolve, reject) => {
-                    var timeOut = Math.random() * 2;
+                    // var timeOut = Math.random() * 2;
+                    var timeOut = 0
                     setTimeout(function () {
                         console.log("我得到了假数据返回的结果")
                         if (timeOut < 1) {
                             resolve('200 OK');
-                        }
-                        else {
+                        } else {
                             reject('timeout in ' + timeOut + ' seconds.');
                         }
                     }, timeOut * 1000);
                 }
-            ).then( 
+            ).then(
                 (res) => {
                     return this.receive(this.mockData.success);
                 }
-            ).catch( 
+            ).catch(
                 (res) => {
                     message.warn(this.mockData.failure.msg);
                     // interrupt promise list
@@ -93,10 +99,10 @@ export abstract class BaseApi {
             return HttpRequest.post(
                 this.accessUrl,
                 request
-            ).then( (res) => {
+            ).then((res) => {
                 console.log("我得到了服务器的结果")
-                let { isSuccess, result } = this._parseResponseHeader(res)
-                if( !isSuccess ){
+                let {isSuccess, result} = this._parseResponseHeader(res)
+                if (!isSuccess) {
                     message.warn(result.msg)
                     throw new Error(result.msg);
                 } else {
@@ -106,13 +112,13 @@ export abstract class BaseApi {
             });
         }
     }
-    
-    receive(result: any): any{
+
+    receive(result: any): any {
         let responseResult = this.returnHelper.parse(result);
         return responseResult;
     }
 
-    toString(): string{
+    toString(): string {
         return "";
     }
 

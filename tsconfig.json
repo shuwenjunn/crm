@@ -4,7 +4,7 @@
         "baseUrl": "./src",
         "paths": {
             "src/*": ["./src"]
-        }
+        },
         "noUnusedLocals": true,
         "strict": true,
         "outDir": "./dist",
@@ -38,7 +38,7 @@
         "removeComments": true,
         "sourceMap": true
     },
-    "include": ["src", "types"]
+    "include": ["src", "types"],
     "exclude": [
         "node_modules",
         "dist"

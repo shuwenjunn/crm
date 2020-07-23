@@ -20,7 +20,7 @@ export class LoginContainer extends BaseContainer {
         super(initialState);
 
         this.initialState = initialState;
-        this.loginAccount = this.createAsynchronizationAction('crm', LoginType.LOGIN_ACCOUNT);
+        this.loginAccount = this.createAsynchronizationAction('crm-pc', LoginType.LOGIN_ACCOUNT);
     }
 
     actions(): any{
@@ -30,7 +30,7 @@ export class LoginContainer extends BaseContainer {
     }
 
     reducer(): any{
-        return handleActions<RootState.LoginState, models.AccountModel>(
+        return handleActions<Pick<RootState,'login'> , models.AccountModel>(
             {
                 [this.loginAccount.pending.toString()]: (state, action) => {
                     console.log('action进行中')

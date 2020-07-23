@@ -1,13 +1,15 @@
 'use strict'
 
 
-import { RouteConfig } from 'react-router-config';
-import { App } from 'containers/app';
-import { Login } from 'containers/pages/login';
-import { One } from 'containers/pages/one';
-import { Two } from 'containers/pages/two';
-import { Welcome } from 'containers/pages/welcome';
+import {RouteConfig} from 'react-router-config';
+import {App} from 'containers/app';
+import {Login} from 'containers/pages/login';
+import {One} from 'containers/pages/one';
+import {Two} from 'containers/pages/two';
+import {Welcome} from 'containers/pages/welcome';
 
+import Customer from 'containers/pages/customer/customer'
+import Brand from 'containers/pages/product/brand'
 
 export const paths: RouteConfig[] = [
     {
@@ -17,7 +19,7 @@ export const paths: RouteConfig[] = [
     {
         path: "/",
         component: App as any,
-        routes:[
+        routes: [
             {
                 path: "/one",
                 exact: true,
@@ -32,6 +34,16 @@ export const paths: RouteConfig[] = [
                 path: "/welcome",
                 exact: true,
                 component: Welcome as any,
+            },
+            {
+                path: "/customer",
+                exact: true,
+                component: Customer as any,
+            },
+            {
+                path: "/brand",
+                exact: true,
+                component: Brand as any,
             },
         ]
     },

@@ -5,8 +5,8 @@ import { ServerInterface } from 'common/interface';
 
 export const serverConfig: ServerInterface[] = [
     {
-        flag: 'crm',
-        url: "http://localhost:8011/interface/",
+        flag: 'crm-pc',
+        url: "http://education.bq.com/interface/",
         description: "crm系统服务"
     },
     {

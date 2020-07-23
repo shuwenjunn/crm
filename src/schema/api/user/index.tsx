@@ -7,9 +7,9 @@ import * as api from 'common/api/core';
 
 export const userApi: ApiInterface[] = [
     { 
-        name: "user.login", 
+        name: "staff.account.login",
         descriptions: "it will login by username and password",
-        servers: ["crm", 'test'],
+        servers: ["crm-pc", 'test'],
         type: api.UnAuthorizationApi,
         request: [
             {attr: 'username', type: fields.StringField},
