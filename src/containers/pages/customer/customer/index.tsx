@@ -40,17 +40,21 @@ const Page = () => {
 
     const onFinish = (values: any) => {
         setPagination({showQuickJumper: true, current: 1})
-        setSearchInfo({
+        const params = {
             ...values,
             ...handleRangePicker(values.create_time, 'YYYY-MM-DD HH:mm:ss', 'create_time__gte', 'create_time__lte')
-        })
+        }
+        // if (params.create_time) {
+        //     delete params.create_time
+        // }
+        setSearchInfo(params)
     }
 
     const handleRangePicker = (value: any, format: any, startKey: string, endKey: string): any => {
         if (value && value.length > 0) {
             return {
-                [startKey]: value[0].format(format),
-                [endKey]: value[1].format(format),
+                [startKey]: value[0].format('YYYY-MM-DD 00:00:00'),
+                [endKey]: value[1].format('YYYY-MM-DD 23:59:59'),
             }
         } else {
             return {}
@@ -251,14 +255,14 @@ const Page = () => {
 
             <Form form={form} name="search" layout="inline" onFinish={onFinish}>
                 <FormItem
-                    name="name"
+                    name="nick"
                 >
-                    <Input placeholder="客户名称"/>
+                    <Input placeholder="客户昵称"/>
                 </FormItem>
                 <FormItem
                     name="create_time"
                 >
-                    <RangePicker/>
+                    <RangePicker placeholder={['注册时间', '注册时间']}/>
                 </FormItem>
 
                 <FormItem>

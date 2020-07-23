@@ -96,7 +96,7 @@ const App: React.FC<DrawerProps> = (props, ref) => {
                 loading={loading}
                 style={{marginTop: 16}}
                 pagination={false}
-                scroll={{x:850}}
+                scroll={{x:750}}
                 rowKey={(record) => record.id}
             />
         </Drawer>
