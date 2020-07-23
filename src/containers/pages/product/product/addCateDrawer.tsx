@@ -1,5 +1,7 @@
 import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react';
 import {Drawer, Button, Form, Input} from 'antd';
+import {PlusCircleOutlined, MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
+import './addCateDrawer.less'
 
 const FormItem = Form.Item
 
@@ -13,8 +15,7 @@ const App: React.FC<Iprops> = (props, ref) => {
     const [record, setRecord] = useState({})
     const [data, setData] = useState({})
     const [optType, setOptType] = useState('')
-
-    const [cateId, setCateId] = useState(0)
+    const [fields, setFields] = useState([0])
 
     const [form] = Form.useForm()
 
@@ -33,12 +34,22 @@ const App: React.FC<Iprops> = (props, ref) => {
     }))
 
     const onFinish = (values: any) => {
-
+        console.log(values)
     }
 
     const layout = {
         labelCol: {span: 5},
-        wrapperCol: {span: 17},
+        wrapperCol: {span: 19},
+    }
+
+    const addField = () => {
+        const newFieldId = fields[fields.length - 1] + 1
+        setFields([...fields, newFieldId])
+    }
+
+    const removeField = (fieldId: number) => {
+        const newFieldId = fields.filter(item => item !== fieldId)
+        setFields(newFieldId)
     }
 
     return (
@@ -47,7 +58,7 @@ const App: React.FC<Iprops> = (props, ref) => {
             placement="right"
             onClose={onClose}
             visible={visible}
-            width={620}
+            width={650}
             footer={
                 <div
                     style={{
@@ -63,25 +74,57 @@ const App: React.FC<Iprops> = (props, ref) => {
                 </div>
             }
         >
-            <Form form={form} name="addCate" onFinish={onFinish} {...layout}>
+            <Form form={form} name="brand" onFinish={onFinish} {...layout}>
                 <FormItem
                     label="分类名称"
                     name="username"
                     rules={[{required: true, message: '请输入分类名称!'}]}
                 >
-                    <Input placeholder="分类名称"/>
+                    <Input placeholder="分类名称" style={{width: '85%'}}/>
                 </FormItem>
-                <FormItem
-                    name="username"
-                    label="分类属性"
-                    rules={[{required: true, message: '请输入分类属性!'}]}
-                >
-                    <Input placeholder="分类属性"/>
-                </FormItem>
-
+                {fields.map((fieldId, index) => (
+                    <FormItem
+                        key={fieldId}
+                        label={index === 0 ? '分类属性' : ' '}
+                        colon={index === 0}
+                        required={index === 0}
+                    >
+                        <FormItem
+                            noStyle
+                            name={`cate__${fieldId}`}
+                            rules={[
+                                {
+                                    required: true,
+                                    whitespace: true,
+                                    message: "请输入分类属性!",
+                                },
+                            ]}
+                        >
+                            <Input placeholder="分类属性" style={{width: '85%'}}/>
+                        </FormItem>
+                        {index === fields.length - 1 ? (
+                            <span>
+                                {fields.length>1&&(
+                                    <MinusCircleOutlined
+                                        className="dynamic-delete-button"
+                                        onClick={() => removeField(fieldId)}
+                                    />
+                                )}
+                                <PlusCircleOutlined className="dynamic-delete-button" onClick={addField}/>
+                            </span>
+                        ) : (
+                            <span>
+                                <MinusCircleOutlined
+                                    className="dynamic-delete-button"
+                                    onClick={() => removeField(fieldId)}
+                                />
+                            </span>
+                        )}
+                    </FormItem>
+                ))}
             </Form>
         </Drawer>
     )
 }
 
-export default forwardRef(App)
+export default forwardRef(App as any)
