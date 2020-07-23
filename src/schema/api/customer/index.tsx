@@ -109,6 +109,34 @@ export const customerApi: ApiInterface[] = [
             {attr: 'customer_id', type: fields.NumberField},
         ],
         response: [
+            {attr: 'total_page', type: fields.NumberField},
+            {attr: 'total', type: fields.NumberField},
+            {attr: 'data_list', type: fields.NumberField},
+        ],
+        mock: {
+            success: {
+                total: 0,
+                total_page: 0,
+                data_list: []
+            },
+            failure: {
+                code: '9999',
+                msg: '获取数据失败',
+            }
+        }
+    },
+    {
+        name: "customer.transaction.search",
+        descriptions: "",
+        servers: ["crm-pc", 'test'],
+        type: api.UnAuthorizationApi, //??
+        request: [
+            {attr: 'customer_id', type: fields.NumberField},
+            {attr: 'current_page', type: fields.StringField},
+        ],
+        response: [
+            {attr: 'total_page', type: fields.NumberField},
+            {attr: 'total', type: fields.NumberField},
             {attr: 'data_list', type: fields.NumberField},
         ],
         mock: {

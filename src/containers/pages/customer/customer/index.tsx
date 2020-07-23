@@ -60,7 +60,6 @@ const Page = () => {
     useEffect(() => {
         fetchTableData()
     }, [searchInfo])
-
     const fetchTableData = async (current = 1) => {
         setLoading(true)
         try {
@@ -76,7 +75,6 @@ const Page = () => {
             setLoading(false)
         }
     }
-
     const columns = [
         {
             title: '手机号',
@@ -157,11 +155,12 @@ const Page = () => {
         },
     ]
 
+
     return (
         <div>
             <DrawerWrapper
                 ref={drawerRef}
-                showFooter={true}
+                showFooter={false}
                 title='客户详情'
                 width={771}
                 request={(record: any) => apiRouter.router('crm-pc', 'customer.get').request({
@@ -169,6 +168,7 @@ const Page = () => {
                 })}
                 renderContent={(data: any) => {
 
+                    // @ts-ignore
                     return (
                         <React.Fragment>
                             <SubTitle title='用户信息'/>
@@ -233,6 +233,11 @@ const Page = () => {
                             <RealNameDrawer
                                 ref={realnameRef}
                             />
+                            <SubTitle
+                                title='用户信息'
+                                rightCon={<span>账户余额：￥{(data.balance / 100).toFixed(2)}</span>}
+                            />
+
                             <AddressDrawer
                                 ref={addressRef}
                             />
