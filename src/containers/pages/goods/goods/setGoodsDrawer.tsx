@@ -67,55 +67,52 @@ const App: React.FC<Iprops> = (props, ref) => {
         setColumns(newColumns)
         const skuData = cartesianProductOf(newData)
         console.log('skuData----->>', skuData)
-        // const data = []
-        // for (let i in skuData) {
-        //     const obj: any = {
-        //         key: skuData[i].join('&')
-        //     }
-        //     for (let j in skuData[i]) {
-        //         const skuIt = skuData[i][j]
-        //         for (let k in cataData) {
-        //             if (cataData[k].children.includes(skuIt)) {
-        //                 obj[cataData[k].key] = skuIt
-        //             }
-        //         }
-        //     }
-        //     obj.price = (
-        //         <FormItem
-        //             name={`${obj.key}__price`}
-        //             noStyle
-        //         >
-        //             <Input placeholder="价格" type={'number'}/>
-        //         </FormItem>
-        //     )
-        //     obj.count = (
-        //         <FormItem
-        //             name={`${obj.key}__count`}
-        //             noStyle
-        //         >
-        //             <Input placeholder="数量" type={'number'}/>
-        //         </FormItem>
-        //     )
-        //     data.push(obj)
-        // }
-        // console.log('data', data)
+        const data = []
+        for (let i in skuData) {
+            const obj: any = {
+                key: skuData[i].join('&')
+            }
+            for (let j in skuData[i]) {
+                const skuIt = skuData[i][j]
+                for (let k in cataData) {
+                    if (cataData[k].children.includes(skuIt)) {
+                        obj[cataData[k].key] = skuIt
+                    }
+                }
+            }
+            obj.price = (
+                <FormItem
+                    name={`${obj.key}__price`}
+                    noStyle
+                >
+                    <Input placeholder="价格" type={'number'}/>
+                </FormItem>
+            )
+            obj.count = (
+                <FormItem
+                    name={`${obj.key}__count`}
+                    noStyle
+                >
+                    <Input placeholder="数量" type={'number'}/>
+                </FormItem>
+            )
+            data.push(obj)
+        }
+        console.log('data', data)
         // setTableData(data)
     }, [categoryData])
 
 
-    const cartesianProductOf = (array: any) => {
-        if (array.length < 2) return array[0] || [];
-        return [].reduce.call(array, function (col, set) {
-            var res = [];
-            col.forEach(function (c) {
-                set.forEach(function (s) {
-                    var t = [].concat(Array.isArray(c) ? c : [c]);
-                    t.push(s);
-                    res.push(t);
-                })
+    const cartesianProductOf = (arr: any) => {
+        return arr.reduce(function (a, b) {
+            var ret: any = [];
+            a.forEach(function (a) {
+                b.forEach(function (b) {
+                    ret.push(a.concat([b]));
+                });
             });
-            return res;
-        });
+            return ret;
+        }, [[]]);
     }
 
 
