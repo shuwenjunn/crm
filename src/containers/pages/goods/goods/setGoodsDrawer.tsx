@@ -1,5 +1,5 @@
 import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react';
-import {Drawer, Button, Form, Input, Select, Checkbox, Table} from 'antd';
+import {Drawer, Button, Form, Input, Select, Checkbox, Table, Switch} from 'antd';
 
 const FormItem = Form.Item
 
@@ -50,7 +50,6 @@ const App: React.FC<Iprops> = (props, ref) => {
     ]
 
     useEffect(() => {
-        console.log('casdfaadsasdfasdf', categoryData)
         let newColumns = []
         const newData: any = []
         for (let i in cataData) {
@@ -64,10 +63,8 @@ const App: React.FC<Iprops> = (props, ref) => {
                 }
             }
         }
-
         setColumns(newColumns)
         const skuData = cartesianProductOf(newData)
-        console.log('skuData----->>', skuData)
         const data = []
         for (let i in skuData) {
             const obj: any = {
@@ -81,15 +78,8 @@ const App: React.FC<Iprops> = (props, ref) => {
                     }
                 }
             }
-            obj.price = (
-                <Input placeholder="价格" type={'number'}/>
-            )
-            obj.count = (
-                <Input placeholder="数量" type={'number'}/>
-            )
             data.push(obj)
         }
-        console.log('data', data)
         setTableData(data)
     }, [categoryData])
 
@@ -184,6 +174,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 <FormItem
                     label="统一价"
                     required={true}
+                    style={{marginBottom: 0}}
                 >
                     <FormItem
                         name="username"
@@ -204,9 +195,9 @@ const App: React.FC<Iprops> = (props, ref) => {
                                     render: (text, record) => (
                                         <FormItem
                                             name={`${record.key}__price`}
-                                            style={{marginBottom:0}}
+                                            style={{marginBottom: 0}}
                                         >
-                                            {text}
+                                            <Input placeholder="价格" type={'number'}/>
                                         </FormItem>
                                     )
                                 }, {
@@ -215,9 +206,9 @@ const App: React.FC<Iprops> = (props, ref) => {
                                     render: (text, record) => (
                                         <FormItem
                                             name={`${record.key}__count`}
-                                            style={{marginBottom:0}}
+                                            style={{marginBottom: 0}}
                                         >
-                                            {text}
+                                            <Input placeholder="数量" type={'number'}/>
                                         </FormItem>
                                     )
                                 }]}
@@ -225,9 +216,17 @@ const App: React.FC<Iprops> = (props, ref) => {
                         </FormItem>
                     )}
                 </FormItem>
+
+                <FormItem
+                    name="status"
+                    label={'上下架'}
+                    rules={[{required: true, message: '请选择上下架状态!'}]}
+                >
+                    <Switch/>
+                </FormItem>
             </Form>
         </Drawer>
     )
 }
 
-export default forwardRef(App)
+export default forwardRef(App as any)

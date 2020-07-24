@@ -109,8 +109,6 @@ export const customerApi: ApiInterface[] = [
             {attr: 'customer_id', type: fields.NumberField},
         ],
         response: [
-            {attr: 'total_page', type: fields.NumberField},
-            {attr: 'total', type: fields.NumberField},
             {attr: 'data_list', type: fields.NumberField},
         ],
         mock: {
