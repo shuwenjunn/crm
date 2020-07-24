@@ -1,5 +1,8 @@
 import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react';
-import {Drawer, Button, Form, Input, Select, Checkbox, Table, Switch} from 'antd';
+import {Drawer, Button, Form, Input, Select, Checkbox, Table, Switch, Upload} from 'antd';
+import {PlusOutlined} from '@ant-design/icons'
+import {apiRouter} from 'common/api'
+import './setGoodsDrawer.less'
 
 const FormItem = Form.Item
 
@@ -108,6 +111,31 @@ const App: React.FC<Iprops> = (props, ref) => {
             }
         }
         setCategory(data)
+    }
+
+    const normFile = e => {
+        console.log('Upload event:', e);
+
+        if (Array.isArray(e)) {
+            return e;
+        }
+
+        return e && e.fileList;
+    }
+
+    const customRequest = async (e: any) => {
+        console.log('eeeeeeeee', e)
+        const file = e.file
+        let formData = new FormData()
+        let fileName = file.name
+
+        formData.append('_upload_files', file.originFileObj)
+        formData.append('store_type','customer')
+        formData.append('role','customer')
+        formData.append('name',fileName)
+        const result = await apiRouter.router('file', 'file.upload').request(formData)
+
+        console.log('result', result)
     }
 
     return (
@@ -224,6 +252,27 @@ const App: React.FC<Iprops> = (props, ref) => {
                 >
                     <Switch/>
                 </FormItem>
+
+                <Form.Item
+                    name="upload"
+                    label="商品轮播"
+                    valuePropName="fileList"
+                    getValueFromEvent={normFile}
+                    extra="请上传图片和视频"
+                    rules={[{required: true, message: '请选择上下架状态!'}]}
+                >
+                    <Upload
+                        listType="picture-card"
+                        customRequest={customRequest}
+                    >
+                        <div>
+                            <PlusOutlined/>
+                            <div className="ant-upload-text">上传视屏</div>
+                        </div>
+                    </Upload>
+                </Form.Item>
+
+
             </Form>
         </Drawer>
     )

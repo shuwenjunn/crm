@@ -69,6 +69,7 @@ export abstract class BaseApi {
         let request = Object.assign({}, header, requestParms)
         request['sign'] = signatureHelper.getSignature(request)
         console.log("我正在请求服务器")
+
         if (config.debug) {
             return new Promise(
                 (resolve, reject) => {
@@ -112,6 +113,61 @@ export abstract class BaseApi {
             });
         }
     }
+
+    /**
+     * 上传
+     * @param params
+     */
+    upload(params: any) {
+        let requestParms = this.parmsHelper.parse(params)
+        let header = this._generateProtocolHeader();
+        let request = Object.assign({}, header, requestParms)
+        request['sign'] = signatureHelper.getSignature(request)
+        console.log("我正在请求服务器")
+        if (config.debug) {
+            return new Promise(
+                (resolve, reject) => {
+                    // var timeOut = Math.random() * 2;
+                    var timeOut = 0
+                    setTimeout(function () {
+                        console.log("我得到了假数据返回的结果")
+                        if (timeOut < 1) {
+                            resolve('200 OK');
+                        } else {
+                            reject('timeout in ' + timeOut + ' seconds.');
+                        }
+                    }, timeOut * 1000);
+                }
+            ).then(
+                (res) => {
+                    return this.receive(this.mockData.success);
+                }
+            ).catch(
+                (res) => {
+                    message.warn(this.mockData.failure.msg);
+                    // interrupt promise list
+                    throw new Error(this.mockData);
+                    // return result
+                }
+            );
+        } else {
+            return HttpRequest.file(
+                this.accessUrl,
+                request
+            ).then((res) => {
+                console.log("我得到了服务器的结果")
+                let {isSuccess, result} = this._parseResponseHeader(res)
+                if (!isSuccess) {
+                    message.warn(result.msg)
+                    throw new Error(result.msg);
+                } else {
+                    result = this.receive(result);
+                }
+                return result;
+            });
+        }
+    }
+
 
     receive(result: any): any {
         let responseResult = this.returnHelper.parse(result);
