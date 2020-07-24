@@ -176,7 +176,7 @@ const Page = () => {
                     customer_id: record.id
                 })}
                 renderContent={(data: any) => {
-
+                    console.log('data---->>', data)
                     // @ts-ignore
                     return (
                         <React.Fragment>
@@ -212,7 +212,7 @@ const Page = () => {
                                     {
                                         label: '是否实名',
                                         value: <span>{data.is_realname ? '已实名' : '未实名'} {data.is_realname ?
-                                            <a onClick={() => realnameRef.current.showDrawer(data.customer_info)}>查看实名信息
+                                            <a onClick={() => realnameRef.current.showDrawer(data.realname_info)}>查看实名信息
                                                 ></a> : null}</span>,
                                     },
                                     {

@@ -6,16 +6,15 @@ import './addCateDrawer.less'
 const FormItem = Form.Item
 
 interface Iprops {
-
+    onAdd(obj: any): void
 }
 
 // @ts-ignore
 const App: React.FC<Iprops> = (props, ref) => {
     const [visible, setVisible] = useState(false)
     const [record, setRecord] = useState({})
-    const [data, setData] = useState({})
     const [optType, setOptType] = useState('')
-    const [fields, setFields] = useState([0])
+    const [fields, setFields] = useState<number[]>([0])
 
     const [form] = Form.useForm()
 
@@ -26,6 +25,8 @@ const App: React.FC<Iprops> = (props, ref) => {
 
     }
     const onClose = () => {
+        form.resetFields()
+        setFields([0])
         setVisible(false)
     }
 
@@ -35,6 +36,24 @@ const App: React.FC<Iprops> = (props, ref) => {
 
     const onFinish = (values: any) => {
         console.log(values)
+        const obj: any = {
+            category: values.category,
+            key: values.category,
+        }
+        let arr = []
+        for (let key in values) {
+            if (key.includes('__')) {
+                arr.push({
+                    name: values[key]
+                })
+            }
+        }
+        arr = arr.sort()
+
+        obj.attribute_list = arr
+        console.log('obj----->>', obj)
+        props.onAdd(obj)
+        onClose()
     }
 
     const layout = {
@@ -50,6 +69,16 @@ const App: React.FC<Iprops> = (props, ref) => {
     const removeField = (fieldId: number) => {
         const newFieldId = fields.filter(item => item !== fieldId)
         setFields(newFieldId)
+    }
+
+    const findDependencies = (fieldId: number): any[] => {
+        let arr = []
+        for (let i in fields) {
+            if (fields[i] == fieldId) {
+                arr.push(`name__${fields[i]}`)
+            }
+        }
+        return arr
     }
 
     return (
@@ -74,10 +103,10 @@ const App: React.FC<Iprops> = (props, ref) => {
                 </div>
             }
         >
-            <Form form={form} name="brand" onFinish={onFinish} {...layout}>
+            <Form form={form} name="attribute_list" onFinish={onFinish} {...layout}>
                 <FormItem
                     label="分类名称"
-                    name="username"
+                    name="category"
                     rules={[{required: true, message: '请输入分类名称!'}]}
                 >
                     <Input placeholder="分类名称" style={{width: '85%'}}/>
@@ -91,20 +120,31 @@ const App: React.FC<Iprops> = (props, ref) => {
                     >
                         <FormItem
                             noStyle
-                            name={`cate__${fieldId}`}
+                            name={`name__${fieldId}`}
+                            dependencies={findDependencies(fieldId)}
                             rules={[
                                 {
                                     required: true,
                                     whitespace: true,
                                     message: "请输入分类属性!",
                                 },
+                                ({getFieldValue}) => ({
+                                    validator(rule, value) {
+                                        findDependencies(fieldId).forEach(item => {
+                                            if (value === getFieldValue(item)) {
+                                                return Promise.reject('属性名重复');
+                                            }
+                                        })
+                                        return Promise.resolve();
+                                    },
+                                })
                             ]}
                         >
                             <Input placeholder="分类属性" style={{width: '85%'}}/>
                         </FormItem>
                         {index === fields.length - 1 ? (
                             <span>
-                                {fields.length>1&&(
+                                {fields.length > 1 && (
                                     <MinusCircleOutlined
                                         className="dynamic-delete-button"
                                         onClick={() => removeField(fieldId)}

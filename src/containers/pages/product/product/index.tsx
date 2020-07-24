@@ -3,11 +3,13 @@ import {Form, Input, Button, Table, Badge} from 'antd'
 import {apiRouter} from 'common/api'
 import SetProductDrawer from './setProductDrawer';
 import DetailDrawer from '../product/detailDrawer'
+import detailDrawer from "../product/detailDrawer";
 
 const FormItem = Form.Item
 
 const Page = () => {
     const drawerRef = useRef()
+    const detailDrawerRef = useRef()
     const [form] = Form.useForm()
 
     const [searchInfo, setSearchInfo] = useState({})
@@ -71,7 +73,7 @@ const Page = () => {
             />
 
             <DetailDrawer
-
+                ref={detailDrawerRef}
             />
             <Form form={form} name="search" layout="inline" onFinish={onFinish}>
                 <FormItem
@@ -99,7 +101,7 @@ const Page = () => {
                         type="primary"
                         onClick={() => {
                             setDrawerTitle('添加产品');
-                            (drawerRef.current as any).showDrawer({}, 'add')
+                            (detailDrawerRef.current as any).showDrawer({}, 'add')
                         }}
                     >
                         添加产品
