@@ -1,8 +1,7 @@
 import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react';
-import {Drawer, Button, Form, Input, Select} from 'antd';
+import {Drawer, Button, Form, Input} from 'antd';
 import {apiRouter} from 'common/api'
 
-const {Option} = Select
 const FormItem = Form.Item
 
 interface Iprops {
@@ -90,21 +89,6 @@ const App: React.FC<Iprops> = (props, ref) => {
                     rules={[{required: true, message: '请输入品牌名称!'}]}
                 >
                     <Input placeholder="品牌名称"/>
-                </FormItem>
-                <FormItem
-                    name="industry"
-                    label="行业"
-                >
-                    <Select
-                        placeholder="行业"
-                        showSearch
-                        optionFilterProp="children"
-                        filterOption={(input, option) => option.props.children.indexOf(input.trim()) >= 0}
-                        allowClear
-                    >
-                        <Option value={'教育'}>教育</Option>
-                        <Option value={'电商'}>电商</Option>
-                    </Select>
                 </FormItem>
                 <FormItem
                     label="品牌描述"

@@ -11,6 +11,7 @@ import {Welcome} from 'containers/pages/welcome';
 import Customer from 'containers/pages/customer/customer'
 import Brand from 'containers/pages/product/brand'
 import Goods from 'containers/pages/goods/goods'
+import Product from 'containers/pages/product/product'
 
 export const paths: RouteConfig[] = [
     {
@@ -40,6 +41,11 @@ export const paths: RouteConfig[] = [
                 path: "/customer",
                 exact: true,
                 component: Customer as any,
+            },
+            {
+                path: "/product",
+                exact: true,
+                component: Product as any,
             },
             {
                 path: "/brand",

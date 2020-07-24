@@ -51,6 +51,12 @@ export const sidebarMenu: MenuElementInterface[] = [
                 icon: icons.ClusterOutlined,
                 router: "/brand",
             },
+            {
+                key: 'product',
+                name: '产品列表',
+                icon: icons.ClusterOutlined,
+                router: "/product",
+            },
         ],
     },
     {

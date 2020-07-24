@@ -10,7 +10,7 @@ interface DrawerProps {
 }
 
 const App: React.FC<DrawerProps> = (props, ref) => {
-    const [visible, setVisible] = useState(true)
+    const [visible, setVisible] = useState(false)
     const [loading, setLoading] = useState<boolean>(false)
     const [data, setData] = useState<any[]>([])
     const addCateRef = useRef()

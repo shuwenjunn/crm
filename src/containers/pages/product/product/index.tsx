@@ -1,11 +1,10 @@
 import React, {useState, useEffect, useRef} from 'react'
-import {Form, Input, Button, Table, Select} from 'antd'
+import {Form, Input, Button, Table, Badge} from 'antd'
 import {apiRouter} from 'common/api'
-import SetBrandDrawer from './setBrandDrawer';
+import SetProductDrawer from './setProductDrawer';
 import DetailDrawer from '../product/detailDrawer'
 
 const FormItem = Form.Item
-const {Option} = Select
 
 const Page = () => {
     const drawerRef = useRef()
@@ -32,7 +31,7 @@ const Page = () => {
     const fetchTableData = async (current = 1) => {
         setLoading(true)
         try {
-            const result = await apiRouter.router('crm-pc', 'production.brand.search').request({
+            const result = await apiRouter.router('crm-pc', 'production.search').request({
                 search_info: JSON.stringify(searchInfo),
                 current_page: current
             })
@@ -65,7 +64,7 @@ const Page = () => {
 
     return (
         <div>
-            <SetBrandDrawer
+            <SetProductDrawer
                 ref={drawerRef}
                 title={drawerTitle}
                 refreshData={refreshData}
@@ -78,7 +77,7 @@ const Page = () => {
                 <FormItem
                     name="name"
                 >
-                    <Input placeholder="品牌"/>
+                    <Input placeholder="产品名称"/>
                 </FormItem>
                 <FormItem>
                     <Button
@@ -99,27 +98,27 @@ const Page = () => {
                         style={{margin: '0 8px'}}
                         type="primary"
                         onClick={() => {
-                            setDrawerTitle('添加品牌');
+                            setDrawerTitle('添加产品');
                             (drawerRef.current as any).showDrawer({}, 'add')
                         }}
                     >
-                        添加品牌
+                        添加产品
                     </Button>
                 </FormItem>
             </Form>
             <Table
                 columns={[
                     {
-                        title: '品牌名称',
+                        title: '产品名称',
                         dataIndex: 'name',
                     },
                     {
-                        title: '行业',
-                        dataIndex: 'industry',
+                        title: '产品描述',
+                        dataIndex: 'description',
                     },
                     {
-                        title: '品牌描述',
-                        dataIndex: 'description',
+                        title: '品牌名称',
+                        dataIndex: 'brand_name',
                     },
                     {
                         title: '创建时间',
@@ -133,7 +132,7 @@ const Page = () => {
                                 <span>
                                     <a
                                         onClick={() => {
-                                            setDrawerTitle('编辑品牌');
+                                            setDrawerTitle('编辑产品');
                                             (drawerRef.current as any).showDrawer(record, 'edit')
                                         }}
                                     >
