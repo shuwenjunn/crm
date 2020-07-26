@@ -76,6 +76,13 @@ const App: React.FC<DrawerProps> = (props, ref) => {
         setAttributeList([...attributeList, obj])
     }
 
+    const onDelete = (key: string) => {
+        const index = attributeList.findIndex(item => item.key === key)
+        attributeList.splice(index, 1)
+        setAttributeList(attributeList)
+    }
+
+
     useEffect(() => {
         console.log('dfadfsasdfasdf', attributeList)
     })
@@ -130,6 +137,19 @@ const App: React.FC<DrawerProps> = (props, ref) => {
                             return record.attribute_list.map((it: any, index: number) => {
                                 return <span key={it}>{it.name}{index < text.length - 1 ? '、' : ''}</span>
                             })
+                        }
+                    },
+                    {
+                        title: '操作',
+                        dataIndex: 'option',
+                        render: (text: any, reocrd: any) => {
+                            return (
+                                <a>
+                                    <a onClick={() => addCateRef.current.showDrawer(record, 'edit')}>编辑</a>
+                                    &nbsp;
+                                    <a onClick={() => onDelete(record.key)}>删除</a>
+                                </a>
+                            )
                         }
                     },
                 ]}
