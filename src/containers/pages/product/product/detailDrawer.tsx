@@ -153,7 +153,7 @@ const App: React.FC<DrawerProps> = (props, ref) => {
 
     return (
         <Drawer
-            title={'详情'}
+            title={optType==='add'?'添加产品':'编辑产品'}
             placement="right"
             closable={false}
             onClose={onClose}
