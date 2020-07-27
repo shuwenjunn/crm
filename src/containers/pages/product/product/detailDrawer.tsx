@@ -9,7 +9,7 @@ const FormItem = Form.Item
 const Option = Select.Option
 
 interface DrawerProps {
-
+    refreshData(): void
 }
 
 const App: React.FC<DrawerProps> = (props, ref) => {
@@ -31,6 +31,9 @@ const App: React.FC<DrawerProps> = (props, ref) => {
         fetchBrancData()
         if (optType === 'edit') {
             console.log('record------->>>', record)
+            form.setFieldsValue({name: record.name})
+            form.setFieldsValue({brand_id: record.brand_id})
+            form.setFieldsValue({description: record.description})
             let newCateId = cateId
             for (let i in record.attribute_list) {
                 newCateId++
@@ -42,13 +45,13 @@ const App: React.FC<DrawerProps> = (props, ref) => {
         }
     }
     const onClose = () => {
+        form.resetFields()
         setVisible(false)
     }
 
     useImperativeHandle(ref, () => ({
         showDrawer
     }))
-
 
     const fetchBrancData = async () => {
         try {
@@ -87,13 +90,34 @@ const App: React.FC<DrawerProps> = (props, ref) => {
     const onFinish = async (values: any) => {
         setLoading(true)
         try {
-            const apiName = optType === 'add' ? 'production.brand.add' : 'production.brand.update'
-            const params: any = {brand_info: JSON.stringify(values)}
+            const apiName = optType === 'add' ? 'production.add' : 'production.update'
 
-            await apiRouter.router('crm-pc', apiName).request({
-                brand_info: JSON.stringify(values),
-                brand_id: record.id
-            })
+            if (optType === 'add') {
+                let production_info = {
+                    name: values.name,
+                    description: values.description,
+                    attribute_list: attributeList,
+                    // @ts-ignore
+                    workflow_list: []
+                }
+                await apiRouter.router('crm-pc', apiName).request({
+                    production_info: JSON.stringify(production_info),
+                    brand_id: values.brand_id
+                })
+            } else {
+                let update_info = {
+                    name: values.name,
+                    description: values.description,
+                    attribute_list: attributeList,
+                    // @ts-ignore
+                    workflow_list: []
+                }
+                await apiRouter.router('crm-pc', apiName).request({
+                    update_info: JSON.stringify(update_info),
+                    production_id: record.id
+                })
+            }
+            props.refreshData()
             onClose()
         } catch (error) {
             console.log('error------->>', error)
@@ -141,14 +165,15 @@ const App: React.FC<DrawerProps> = (props, ref) => {
             <Form form={form} name="brand" onFinish={onFinish} {...layout} initialValues={record}>
                 <FormItem
                     label="产品名称"
-                    name="description"
+                    name="name"
+                    rules={[{required: true, message: '请输入产品名称!'}]}
                 >
-                    <Input placeholder="品牌描述"/>
+                    <Input placeholder="产品名称"/>
                 </FormItem>
 
                 <FormItem
-                    label="品牌名称"
-                    name="name"
+                    label="品牌"
+                    name="brand_id"
                     rules={[{required: true, message: '请输入品牌名称!'}]}
                 >
                     <Select
@@ -157,11 +182,19 @@ const App: React.FC<DrawerProps> = (props, ref) => {
                         optionFilterProp="children"
                         filterOption={(input, option) => option.props.children.indexOf(input.trim()) >= 0}
                         allowClear
+                        disabled={optType === 'edit'}
                     >
                         {brandData.map(d => (
                             <Option value={d.id} key={d.id}>{d.name}</Option>
                         ))}
                     </Select>
+                </FormItem>
+                <FormItem
+                    label="产品描述"
+                    rules={[{required: true, message: '请输入产品描述!'}]}
+                    name="description"
+                >
+                    <Input placeholder="产品描述"/>
                 </FormItem>
             </Form>
             <SubTitle

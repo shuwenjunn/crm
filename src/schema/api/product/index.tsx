@@ -128,10 +128,26 @@ export const productApi: ApiInterface[] = [
         servers: ["crm-pc", 'test'],
         type: api.UnAuthorizationApi,
         request: [
-            {attr: 'name', type: fields.StringField},
-            {attr: 'description', type: fields.StringField},
-            {attr: 'attribute_list', type: fields.StringField},
-            {attr: 'workflow_list', type: fields.StringField},
+            {attr: 'brand_id', type: fields.NumberField},
+            {attr: 'production_info', type: fields.StringField},
+        ],
+        response: [],
+        mock: {
+            success: {},
+            failure: {
+                code: '9999',
+                msg: '获取数据失败',
+            }
+        }
+    },
+    {
+        name: "production.update",
+        descriptions: "",
+        servers: ["crm-pc", 'test'],
+        type: api.UnAuthorizationApi,
+        request: [
+            {attr: 'production_id', type: fields.NumberField},
+            {attr: 'update_info', type: fields.StringField},
         ],
         response: [],
         mock: {
@@ -167,6 +183,23 @@ export const productApi: ApiInterface[] = [
         type: api.UnAuthorizationApi,
         request: [
             {attr: 'brand_id', type: fields.NumberField},
+        ],
+        response: [],
+        mock: {
+            success: {},
+            failure: {
+                code: '9999',
+                msg: '获取数据失败',
+            }
+        }
+    },
+    {
+        name: "production.remove",
+        descriptions: "",
+        servers: ["crm-pc", 'test'],
+        type: api.UnAuthorizationApi,
+        request: [
+            {attr: 'production_id', type: fields.NumberField},
         ],
         response: [],
         mock: {

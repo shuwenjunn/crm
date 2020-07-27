@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import {Form, Input, Button, Table, Badge} from 'antd'
+import {Form, Input, Button, Table, Badge, Popconfirm} from 'antd'
 import {apiRouter} from 'common/api'
 import SetProductDrawer from './setProductDrawer';
 import DetailDrawer from '../product/detailDrawer'
@@ -47,11 +47,15 @@ const Page = () => {
         }
     }
 
+    const refreshData = () => {
+        fetchTableData(pagination.current)
+    }
+
     const removeTableItem = async (id: number) => {
         setLoading(true)
         try {
-            await apiRouter.router('crm-pc', 'production.brand.remove').request({
-                brand_id: id
+            await apiRouter.router('crm-pc', 'production.remove').request({
+                production_id: id
             })
             refreshData()
         } catch (error) {
@@ -59,10 +63,6 @@ const Page = () => {
         } finally {
             setLoading(false)
         }
-    }
-
-    const refreshData = () => {
-        fetchTableData(pagination.current)
     }
 
     return (
@@ -75,6 +75,7 @@ const Page = () => {
 
             <DetailDrawer
                 ref={detailDrawerRef}
+                refreshData={refreshData}
             />
             <Form form={form} name="search" layout="inline" onFinish={onFinish}>
                 <FormItem
@@ -142,7 +143,12 @@ const Page = () => {
                                         编辑
                                     </a>
                                     &nbsp;
-                                    <a onClick={() => removeTableItem(record.id)}>删除</a>
+                                    <Popconfirm
+                                        title="你确定删除该产品吗?"
+                                        onConfirm={() => removeTableItem(record.id)}
+                                    >
+                                        <a>删除</a>
+                                    </Popconfirm>
                                 </span>
                             )
                         }
