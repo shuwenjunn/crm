@@ -1,8 +1,8 @@
 import React, {useState, useImperativeHandle, forwardRef, useEffect, useRef} from 'react'
-import {Button, Drawer, Form, Input, Select, Table} from 'antd'
+import _ from 'lodash'
+import {Button, Drawer, Form, Input, Select, Table, message} from 'antd'
 import {apiRouter} from 'common/api'
 import SubTitle from 'containers/components/subTitle';
-import DescribeList from 'containers/components/describeList';
 import AddCateDrawer from './addCateDrawer'
 
 const FormItem = Form.Item
@@ -11,6 +11,7 @@ const Option = Select.Option
 interface DrawerProps {
     refreshData(): void
 }
+
 
 const App: React.FC<DrawerProps> = (props, ref) => {
     const [visible, setVisible] = useState(false)
@@ -87,7 +88,21 @@ const App: React.FC<DrawerProps> = (props, ref) => {
         setAttributeList(list)
     }
 
+
+    // 判断是否有重复
+    function hasDuplicates(a) {
+        return _.uniq(a).length !== a.length;
+    }
+
     const onFinish = async (values: any) => {
+        if (attributeList.length <= 0) {
+            message.warning('请给该产品添加属性！')
+            return
+        }
+        if (hasDuplicates(_.map(attributeList, 'category'))) {
+            message.warning('分类名称重复！')
+            return
+        }
         setLoading(true)
         try {
             const apiName = optType === 'add' ? 'production.add' : 'production.update'
@@ -143,6 +158,7 @@ const App: React.FC<DrawerProps> = (props, ref) => {
             closable={false}
             onClose={onClose}
             visible={visible}
+            destroyOnClose={true}
             width={669}
             footer={
                 <div
@@ -162,7 +178,7 @@ const App: React.FC<DrawerProps> = (props, ref) => {
             <SubTitle
                 title='产品信息'
             />
-            <Form form={form} name="brand" onFinish={onFinish} {...layout} initialValues={record}>
+            <Form form={form} name="brand" onFinish={onFinish} {...layout}>
                 <FormItem
                     label="产品名称"
                     name="name"

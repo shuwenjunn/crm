@@ -1,6 +1,7 @@
 import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react';
-import {Drawer, Button, Form, Input} from 'antd';
+import {Drawer, Button, Form, Input, message} from 'antd';
 import {PlusCircleOutlined, MinusCircleOutlined} from '@ant-design/icons'
+import _ from 'lodash'
 import './addCateDrawer.less'
 
 const FormItem = Form.Item
@@ -45,6 +46,11 @@ const App: React.FC<Iprops> = (props, ref) => {
         setVisible(false)
     }
 
+    // 判断是否有重复
+    function hasDuplicates(a) {
+        return _.uniq(a).length !== a.length;
+    }
+
     useImperativeHandle(ref, () => ({
         showDrawer
     }))
@@ -63,6 +69,10 @@ const App: React.FC<Iprops> = (props, ref) => {
             }
         }
         arr = arr.sort()
+        if (hasDuplicates(_.map(arr, 'name'))) {
+            message.warning('属性值重复！')
+            return
+        }
 
         obj.attribute_list = arr
 

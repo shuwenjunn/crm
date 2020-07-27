@@ -75,9 +75,11 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.158",
     "antd": "^4.0.1",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
+    "lodash": "^4.17.19",
     "qs": "^6.9.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
