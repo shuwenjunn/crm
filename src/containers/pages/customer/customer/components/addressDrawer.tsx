@@ -82,7 +82,7 @@ const App: React.FC<DrawerProps> = (props, ref) => {
 
     return (
         <Drawer
-            title={'地址信息'}
+            title={'银行卡信息'}
             placement="right"
             closable={false}
             onClose={onClose}

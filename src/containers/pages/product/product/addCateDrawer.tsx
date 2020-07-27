@@ -1,18 +1,20 @@
 import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react';
 import {Drawer, Button, Form, Input} from 'antd';
-import {PlusCircleOutlined, MinusCircleOutlined, PlusOutlined} from '@ant-design/icons'
+import {PlusCircleOutlined, MinusCircleOutlined} from '@ant-design/icons'
 import './addCateDrawer.less'
 
 const FormItem = Form.Item
 
 interface Iprops {
     onAdd(obj: any): void
+
+    onEdit(obj: any): void
 }
 
 // @ts-ignore
 const App: React.FC<Iprops> = (props, ref) => {
     const [visible, setVisible] = useState(false)
-    const [record, setRecord] = useState({})
+    const [record, setRecord] = useState<any>({})
     const [optType, setOptType] = useState('')
     const [fields, setFields] = useState<number[]>([0])
 
@@ -22,8 +24,21 @@ const App: React.FC<Iprops> = (props, ref) => {
         setVisible(true)
         setRecord(record)
         setOptType(optType)
-
+        console.log('record--------->>>', record)
+        if (optType === 'edit') {
+            form.setFieldsValue({'category': record.category})
+            let arr = []
+            for (let index = 0; index < record.attribute_list.length; index++) {
+                console.log('index------>>', index)
+                arr.push(index)
+                form.setFieldsValue({
+                    [`name__${index}`]: record.attribute_list[index].name
+                })
+            }
+            setFields(arr)
+        }
     }
+
     const onClose = () => {
         form.resetFields()
         setFields([0])
@@ -38,7 +53,6 @@ const App: React.FC<Iprops> = (props, ref) => {
         console.log(values)
         const obj: any = {
             category: values.category,
-            key: values.category,
         }
         let arr = []
         for (let key in values) {
@@ -51,8 +65,16 @@ const App: React.FC<Iprops> = (props, ref) => {
         arr = arr.sort()
 
         obj.attribute_list = arr
-        console.log('obj----->>', obj)
-        props.onAdd(obj)
+
+        if (optType === 'add') {
+            obj.key = record.key
+            props.onAdd(obj)
+        } else {
+            obj.key = record.key
+            props.onEdit(obj)
+        }
+
+
         onClose()
     }
 
@@ -121,23 +143,23 @@ const App: React.FC<Iprops> = (props, ref) => {
                         <FormItem
                             noStyle
                             name={`name__${fieldId}`}
-                            dependencies={findDependencies(fieldId)}
+                            // dependencies={findDependencies(fieldId)}
                             rules={[
                                 {
                                     required: true,
                                     whitespace: true,
                                     message: "请输入分类属性!",
                                 },
-                                ({getFieldValue}) => ({
-                                    validator(rule, value) {
-                                        findDependencies(fieldId).forEach(item => {
-                                            if (value === getFieldValue(item)) {
-                                                return Promise.reject('属性名重复');
-                                            }
-                                        })
-                                        return Promise.resolve();
-                                    },
-                                })
+                                // ({getFieldValue}) => ({
+                                //     validator(rule, value) {
+                                //         findDependencies(fieldId).forEach(item => {
+                                //             if (value === getFieldValue(item)) {
+                                //                 return Promise.reject('属性名重复');
+                                //             }
+                                //         })
+                                //         return Promise.resolve();
+                                //     },
+                                // })
                             ]}
                         >
                             <Input placeholder="分类属性" style={{width: '85%'}}/>

@@ -26,6 +26,7 @@ const Page = () => {
         })
     }
 
+
     useEffect(() => {
         fetchTableData()
     }, [searchInfo])
@@ -135,7 +136,7 @@ const Page = () => {
                                     <a
                                         onClick={() => {
                                             setDrawerTitle('编辑产品');
-                                            (drawerRef.current as any).showDrawer(record, 'edit')
+                                            (detailDrawerRef.current as any).showDrawer(record, 'edit')
                                         }}
                                     >
                                         编辑

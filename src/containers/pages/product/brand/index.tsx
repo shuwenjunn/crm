@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import {Form, Input, Button, Table, Select} from 'antd'
+import {Form, Input, Button, Table, Select, Popconfirm} from 'antd'
 import {apiRouter} from 'common/api'
 import SetBrandDrawer from './setBrandDrawer';
 import DetailDrawer from '../product/detailDrawer'
@@ -140,7 +140,12 @@ const Page = () => {
                                         编辑
                                     </a>
                                     &nbsp;
-                                    <a onClick={() => removeTableItem(record.id)}>删除</a>
+                                    <Popconfirm
+                                        title="你确定删除品牌吗?"
+                                        onConfirm={() => removeTableItem(record.id)}
+                                    >
+                                        <a>删除</a>
+                                    </Popconfirm>
                                 </span>
                             )
                         }

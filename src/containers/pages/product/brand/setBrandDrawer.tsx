@@ -23,10 +23,21 @@ const App: React.FC<Iprops> = (props, ref) => {
     const showDrawer = (record: any, optType: string) => {
         setVisible(true)
         setRecord(record)
-        console.log(record)
         setOptType(optType)
-
+        setFieldValue(record)
     }
+
+    const setFieldValue = (obj: any) => {
+        const arr = []
+        for (let i in obj) {
+            arr.push({
+                name: i,
+                value: obj[i]
+            })
+        }
+        form.setFields(arr)
+    }
+
     const onClose = () => {
         form.resetFields()
         props.refreshData()
@@ -68,6 +79,7 @@ const App: React.FC<Iprops> = (props, ref) => {
             onClose={onClose}
             visible={visible}
             width={500}
+            destroyOnClose={true}
             footer={
                 <div
                     style={{
@@ -83,7 +95,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 </div>
             }
         >
-            <Form form={form} name="brand" onFinish={onFinish} {...layout} initialValues={record}>
+            <Form form={form} name="brand" onFinish={onFinish} {...layout}>
                 <FormItem
                     label="品牌名称"
                     name="name"
@@ -94,6 +106,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 <FormItem
                     name="industry"
                     label="行业"
+                    rules={[{required: true, message: '请选择行业!'}]}
                 >
                     <Select
                         placeholder="行业"
@@ -109,6 +122,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 <FormItem
                     label="品牌描述"
                     name="description"
+                    rules={[{required: true, message: '请填写品牌描述!'}]}
                 >
                     <Input placeholder="品牌描述"/>
                 </FormItem>

@@ -1,11 +1,12 @@
 import React, {useState, useImperativeHandle, forwardRef, useEffect, useRef} from 'react'
-import {Drawer, Form, Input, Table} from 'antd'
+import {Button, Drawer, Form, Input, Select, Table} from 'antd'
 import {apiRouter} from 'common/api'
 import SubTitle from 'containers/components/subTitle';
 import DescribeList from 'containers/components/describeList';
 import AddCateDrawer from './addCateDrawer'
 
 const FormItem = Form.Item
+const Option = Select.Option
 
 interface DrawerProps {
 
@@ -20,13 +21,25 @@ const App: React.FC<DrawerProps> = (props, ref) => {
     const [record, setRecord] = useState<any>({})
     const [optType, setOptType] = useState('')
     const [attributeList, setAttributeList] = useState<any[]>([])
-
+    const [brandData, setBrandData] = useState<any[]>([])
+    const [cateId, setCateId] = useState(0)
 
     const showDrawer = (record: any, optType: string) => {
         setVisible(true)
         setOptType(optType)
         setRecord(record)
-        // fetchTableData(record)
+        fetchBrancData()
+        if (optType === 'edit') {
+            console.log('record------->>>', record)
+            let newCateId = cateId
+            for (let i in record.attribute_list) {
+                newCateId++
+                record.attribute_list[i].key = newCateId
+            }
+            setCateId(newCateId)
+            console.log('record.attribute_list', record.attribute_list)
+            setAttributeList(record.attribute_list)
+        }
     }
     const onClose = () => {
         setVisible(false)
@@ -37,33 +50,14 @@ const App: React.FC<DrawerProps> = (props, ref) => {
     }))
 
 
-    const fetchTableData = async (record: any) => {
-        setLoading(true)
+    const fetchBrancData = async () => {
         try {
-            const result = await apiRouter.router('crm-pc', 'customer.address.search').request({
-                customer_id: record.id
-            })
-            setData(result.data_list)
+            const result = await apiRouter.router('crm-pc', 'production.brand.searchall').request({})
+            setBrandData(result.data_list)
         } catch (error) {
             console.log('error------->>', error)
         } finally {
-            setLoading(false)
-        }
-    }
 
-    const onFinish = async (values: any) => {
-        setLoading(true)
-        try {
-            const apiName = optType === 'add' ? 'production.brand.add' : 'production.brand.update'
-            await apiRouter.router('crm-pc', apiName).request({
-                brand_info: JSON.stringify(values),
-                brand_id: record.id
-            })
-            onClose()
-        } catch (error) {
-            console.log('error------->>', error)
-        } finally {
-            setLoading(false)
         }
     }
 
@@ -77,15 +71,46 @@ const App: React.FC<DrawerProps> = (props, ref) => {
     }
 
     const onDelete = (key: string) => {
-        const index = attributeList.findIndex(item => item.key === key)
-        attributeList.splice(index, 1)
-        setAttributeList(attributeList)
+        const list = [...attributeList]
+        const index = list.findIndex(item => item.key === key)
+        list.splice(index, 1)
+        setAttributeList(list)
     }
 
+    const onEdit = (obj: any) => {
+        const list = [...attributeList]
+        const index = list.findIndex(item => item.key === obj.key)
+        list[index] = obj
+        setAttributeList(list)
+    }
+
+    const onFinish = async (values: any) => {
+        setLoading(true)
+        try {
+            const apiName = optType === 'add' ? 'production.brand.add' : 'production.brand.update'
+            const params: any = {brand_info: JSON.stringify(values)}
+
+            await apiRouter.router('crm-pc', apiName).request({
+                brand_info: JSON.stringify(values),
+                brand_id: record.id
+            })
+            onClose()
+        } catch (error) {
+            console.log('error------->>', error)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     useEffect(() => {
-        console.log('dfadfsasdfasdf', attributeList)
-    })
+        console.log('attributeList------>>', attributeList)
+    }, [attributeList])
+
+    const openAddCateDrawer = () => {
+        const newCateId = cateId + 1
+        setCateId(newCateId);
+        (addCateRef as any).current.showDrawer({key: newCateId}, 'add')
+    }
 
     return (
         <Drawer
@@ -95,6 +120,20 @@ const App: React.FC<DrawerProps> = (props, ref) => {
             onClose={onClose}
             visible={visible}
             width={669}
+            footer={
+                <div
+                    style={{
+                        textAlign: 'right',
+                    }}
+                >
+                    <Button onClick={onClose} style={{marginRight: 8}}>
+                        取消
+                    </Button>
+                    <Button onClick={form.submit} type="primary" loading={loading}>
+                        确认
+                    </Button>
+                </div>
+            }
         >
             <SubTitle
                 title='产品信息'
@@ -112,14 +151,29 @@ const App: React.FC<DrawerProps> = (props, ref) => {
                     name="name"
                     rules={[{required: true, message: '请输入品牌名称!'}]}
                 >
-                    <Input placeholder="品牌名称"/>
+                    <Select
+                        placeholder="品牌名称"
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option) => option.props.children.indexOf(input.trim()) >= 0}
+                        allowClear
+                    >
+                        {brandData.map(d => (
+                            <Option value={d.id} key={d.id}>{d.name}</Option>
+                        ))}
+                    </Select>
                 </FormItem>
             </Form>
             <SubTitle
                 title='属性信息'
                 rightCon={(
                     <div>
-                        <a style={{fontSize: 14}} onClick={() => addCateRef.current.showDrawer({}, 'add')}>添加分类</a>
+                        <a
+                            style={{fontSize: 14}}
+                            onClick={openAddCateDrawer}
+                        >
+                            添加分类
+                        </a>
                     </div>
                 )}
             />
@@ -135,20 +189,20 @@ const App: React.FC<DrawerProps> = (props, ref) => {
                         render: (text: any, record) => {
                             console.log('text', record)
                             return record.attribute_list.map((it: any, index: number) => {
-                                return <span key={it}>{it.name}{index < text.length - 1 ? '、' : ''}</span>
+                                return <span key={it.name}>{it.name}{index < text.length - 1 ? '、' : ''}</span>
                             })
                         }
                     },
                     {
                         title: '操作',
                         dataIndex: 'option',
-                        render: (text: any, reocrd: any) => {
+                        render: (text: any, record: any) => {
                             return (
-                                <a>
+                                <span>
                                     <a onClick={() => addCateRef.current.showDrawer(record, 'edit')}>编辑</a>
                                     &nbsp;
                                     <a onClick={() => onDelete(record.key)}>删除</a>
-                                </a>
+                                </span>
                             )
                         }
                     },
@@ -162,6 +216,7 @@ const App: React.FC<DrawerProps> = (props, ref) => {
             <AddCateDrawer
                 ref={addCateRef}
                 onAdd={onAdd}
+                onEdit={onEdit}
             />
         </Drawer>
     )

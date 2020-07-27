@@ -41,6 +41,37 @@ export const productApi: ApiInterface[] = [
         }
     },
     {
+        name: "production.brand.searchall",
+        descriptions: "",
+        servers: ["crm-pc", 'test'],
+        type: api.UnAuthorizationApi, //??
+        request: [
+
+        ],
+        response: [
+            {attr: 'data_list', type: fields.NumberField},
+        ],
+        mock: {
+            success: {
+                total: 1,
+                total_page: 1,
+                data_list: [
+                    {
+                        id: 1,//int # 品牌id
+                        name: 'biquan',//char # 品牌名称
+                        industry: '教育',//char # 行业
+                        description: '必圈牛逼',//char # 品牌描述
+                        create_time: '2020-09-10',//datetime # 添加时间
+                    }
+                ]
+            },
+            failure: {
+                code: '9999',
+                msg: '获取数据失败',
+            }
+        }
+    },
+    {
         name: "production.search",
         descriptions: "",
         servers: ["crm-pc", 'test'],
