@@ -15,13 +15,11 @@ export const sidebarMenu: MenuElementInterface[] = [
             {
                 key: 'department',
                 name: '部门列表',
-                icon: icons.ClusterOutlined,
                 router: "/one",
             },
             {
                 key: 'sublist',
                 name: '员工列表',
-                icon: icons.TeamOutlined,
                 router: "/two",
             },
         ],
@@ -29,13 +27,12 @@ export const sidebarMenu: MenuElementInterface[] = [
     {
         key: 'customer',
         name: '客户管理',
-        icon: icons.HomeOutlined,
+        icon: icons.TeamOutlined,
         router: "/customer",
         child: [
             {
                 key: 'customer',
                 name: '客户列表',
-                icon: icons.ClusterOutlined,
                 router: "/customer",
             },
         ],
@@ -43,18 +40,16 @@ export const sidebarMenu: MenuElementInterface[] = [
     {
         key: 'product',
         name: '产品管理',
-        icon: icons.HomeOutlined,
+        icon: icons.GoldOutlined,
         child: [
             {
                 key: 'brand',
                 name: '品牌列表',
-                icon: icons.ClusterOutlined,
                 router: "/brand",
             },
             {
                 key: 'product',
                 name: '产品列表',
-                icon: icons.ClusterOutlined,
                 router: "/product",
             },
         ],
@@ -62,12 +57,11 @@ export const sidebarMenu: MenuElementInterface[] = [
     {
         key: 'goods',
         name: '商品管理',
-        icon: icons.HomeOutlined,
+        icon: icons.ShopOutlined,
         child: [
             {
                 key: 'goods',
                 name: '商品列表',
-                icon: icons.ClusterOutlined,
                 router: "/goods",
             },
         ],

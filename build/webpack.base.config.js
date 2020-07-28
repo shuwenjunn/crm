@@ -74,13 +74,13 @@ module.exports = (( process ) => {
 
     const CssLoader = {
         loader: 'css-loader',
-        query: {
-            modules: true,
-            sourceMap: !isProd,
-            importLoaders: 1,
-            // localIdentName: isProd ? '[hash:base64:5].css' : '[local]__[hash:base64:5].css'
-            localIdentName: isProd ? '[hash:base64:5].css' : '[local]'
-        }
+        // query: {
+        //     modules: true,
+        //     sourceMap: !isProd,
+        //     importLoaders: 1,
+        //     // localIdentName: isProd ? '[hash:base64:5].css' : '[local]__[hash:base64:5].css'
+        //     localIdentName: isProd ? '[hash:base64:5].css' : '[local]'
+        // }
     };
 
     const config = {

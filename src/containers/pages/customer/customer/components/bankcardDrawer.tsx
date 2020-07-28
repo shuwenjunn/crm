@@ -53,8 +53,8 @@ const App: React.FC<DrawerProps> = (props, ref) => {
         {
             title: '卡尾号',
             dataIndex: 'bank_number',
-            width: 80,
-            render: (str: string) => str.substring(str.length - 4)
+            width: 180,
+            render: (str: string) => `${str.substring(0, 6)}******${str.substring(str.length - 4)}`
         },
         {
             title: '开户人',
@@ -94,7 +94,7 @@ const App: React.FC<DrawerProps> = (props, ref) => {
                 style={{marginTop: 16}}
                 pagination={false}
                 rowKey={(record) => record.id}
-                scroll={{x:900}}
+                scroll={{x: 900}}
             />
         </Drawer>
     )

@@ -11,7 +11,7 @@ import BankCardDrawer from './components/bankcardDrawer'
 import {serverConfig} from 'schema/server'
 
 console.log('serverCOnfig', serverConfig)
-const apiServer = serverConfig.filter(it => it.flag === 'crm-pc')[0].url.replace('/interface/', '')
+const imgUrl = serverConfig.filter(it => it.flag === 'crm-pc')[0].url.replace('/interface/', '')
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker;
@@ -106,7 +106,7 @@ const Page = () => {
             render: (text) => {
                 return (
                     <ImgPreview
-                        url={text}
+                        url={`${imgUrl}${text}`}
                         title={'头像'}
                         customerStyle={{
                             width: 88,

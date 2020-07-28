@@ -2,6 +2,9 @@ import React, {useState, useImperativeHandle, forwardRef} from 'react'
 import {Badge, Drawer} from 'antd'
 import DescribeList from 'containers/components/describeList';
 import ImgPreview from 'containers/components/imgPreview';
+import {serverConfig} from 'schema/server'
+
+const imgUrl = serverConfig.filter(it => it.flag === 'crm-pc')[0].url.replace('/interface/', '')
 
 interface DrawerProps {
 
@@ -41,31 +44,34 @@ const App: React.FC<DrawerProps> = (props, ref) => {
                     },
                     {
                         label: '身份证号',
-                        value: record.identification,
+                        value: record.identification ? record.identification.replace(/^(.{6})(?:\d+)(.{4})$/, "$1****$2") : '',
                     },
                     {
                         label: '身份证正面',
-                        value: record.id_front && <ImgPreview title={'身份证正面'} url={record.id_front} customerStyle={{
-                            width: 400,
-                            height: 200,
-                            cursor: 'pointer'
-                        }}/>,
+                        value: record.id_front &&
+                            <ImgPreview title={'身份证正面'} url={`${imgUrl}${record.id_front}`} customerStyle={{
+                                width: 400,
+                                height: 200,
+                                cursor: 'pointer'
+                            }}/>,
                     },
                     {
                         label: '身份证反面',
-                        value: record.id_back && <ImgPreview title={'身份证正面'} url={record.id_back} customerStyle={{
-                            width: 400,
-                            height: 200,
-                            cursor: 'pointer'
-                        }}/>,
+                        value: record.id_back &&
+                            <ImgPreview title={'身份证正面'} url={`${imgUrl}${record.id_back}`} customerStyle={{
+                                width: 400,
+                                height: 200,
+                                cursor: 'pointer'
+                            }}/>,
                     },
                     {
                         label: '手持身份证',
-                        value: record.id_in_band && <ImgPreview title={'身份证正面'} url={record.id_in_band} customerStyle={{
-                            width: 400,
-                            height: 200,
-                            cursor: 'pointer'
-                        }}/>,
+                        value: record.id_in_band &&
+                            <ImgPreview title={'身份证正面'} url={`${imgUrl}${record.id_in_band}`} customerStyle={{
+                                width: 400,
+                                height: 200,
+                                cursor: 'pointer'
+                            }}/>,
                     },
                 ]}
             />
