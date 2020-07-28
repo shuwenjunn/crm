@@ -12,6 +12,7 @@ import Customer from 'containers/pages/customer/customer'
 import Brand from 'containers/pages/product/brand'
 import Goods from 'containers/pages/goods/goods'
 import Product from 'containers/pages/product/product'
+import Personal from 'containers/pages/user/personal'
 
 export const paths: RouteConfig[] = [
     {
@@ -56,6 +57,11 @@ export const paths: RouteConfig[] = [
                 path: "/goods",
                 exact: true,
                 component: Goods as any,
+            },
+            {
+                path: "/personal",
+                exact: true,
+                component: Personal as any,
             },
         ]
     },

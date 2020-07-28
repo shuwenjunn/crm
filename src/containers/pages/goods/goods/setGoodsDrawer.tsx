@@ -3,6 +3,7 @@ import {Drawer, Button, Form, Input, Select, Checkbox, Table, Switch, Upload} fr
 import {PlusOutlined} from '@ant-design/icons'
 import {apiRouter} from 'common/api'
 import './setGoodsDrawer.less'
+import CustomUpload from './Upload'
 
 const FormItem = Form.Item
 
@@ -19,6 +20,8 @@ const App: React.FC<Iprops> = (props, ref) => {
     const [columns, setColumns] = useState<any[]>([])
     const [tableData, setTableData] = useState<any[]>([])
     const [categoryData, setCategory] = useState<any>({})
+    const [fileList, setFileList] = useState<any[]>([])
+
 
     const [form] = Form.useForm()
 
@@ -111,29 +114,28 @@ const App: React.FC<Iprops> = (props, ref) => {
             }
         }
         setCategory(data)
-    }
 
-    const normFile = e => {
-        console.log('Upload event:', e);
 
-        if (Array.isArray(e)) {
-            return e;
-        }
-
-        return e && e.fileList;
+        console.log('eeeeeeeeeeeeeee-------->>>',e)
     }
 
     const customRequest = async (e: any) => {
-        console.log('eeeeeeeee', e)
+
         const file = e.file
-        let formData = new FormData()
         let fileName = file.name
 
-        formData.append('_upload_files', file.originFileObj)
-        formData.append('store_type','customer')
-        formData.append('role','customer')
-        formData.append('name',fileName)
-        const result = await apiRouter.router('file', 'file.upload').request(formData)
+        const fileData = {
+            fileObj: file,
+            fileName,
+        }
+
+        const extraParams = {
+            store_type: 'goods',
+            role: 'goods',
+            upload_file: fileName
+        }
+
+        const result = await apiRouter.router('file', 'file.upload').upload(fileData, extraParams)
 
         console.log('result', result)
     }
@@ -257,23 +259,35 @@ const App: React.FC<Iprops> = (props, ref) => {
                     name="upload"
                     label="商品轮播"
                     valuePropName="fileList"
-                    getValueFromEvent={normFile}
-                    extra="请上传图片和视频"
-                    rules={[{required: true, message: '请选择上下架状态!'}]}
+                    extra="最多可上传5张"
+                    rules={[{required: true, message: '请上传商品轮播图!'}]}
                 >
-                    <Upload
-                        listType="picture-card"
-                        customRequest={customRequest}
-                    >
-                        <div>
-                            <PlusOutlined/>
-                            <div className="ant-upload-text">上传视屏</div>
-                        </div>
-                    </Upload>
+                    <CustomUpload
+                        fileType='image'
+                        limit={5}
+                        onChange={(value: any) => {
+                            form.setFieldsValue({'upload': value})
+                        }}
+                    />
                 </Form.Item>
 
-
+                <Form.Item
+                    name="video"
+                    label="商品视频"
+                    valuePropName="fileList"
+                    extra="商品视频"
+                >
+                    <CustomUpload
+                        fileType='video'
+                        limit={1}
+                        onChange={(value: any) => {
+                            form.setFieldsValue({'video': value})
+                        }}
+                    />
+                </Form.Item>
             </Form>
+
+
         </Drawer>
     )
 }

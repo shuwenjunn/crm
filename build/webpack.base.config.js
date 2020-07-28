@@ -18,7 +18,8 @@ const PATHS = {
     reduxes: path.join(sourcePath, '/reduxes'),
     routes: path.join(sourcePath, '/routes'),
     schema: path.join(sourcePath, '/schema'),
-    assets: path.join(sourcePath, '/assets')
+    assets: path.join(sourcePath, '/assets'),
+    components: path.join(sourcePath, '/components'),
 };
 
 // for ant style overrides
@@ -112,6 +113,7 @@ module.exports = (( process ) => {
                 routes: PATHS.routes,
                 schema: PATHS.schema,
                 assets: PATHS.assets,
+                components: PATHS.components,
                 '&': sourcePath
             }
         },

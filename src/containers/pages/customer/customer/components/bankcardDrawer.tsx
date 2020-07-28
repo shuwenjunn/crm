@@ -51,7 +51,7 @@ const App: React.FC<DrawerProps> = (props, ref) => {
             width: 80
         },
         {
-            title: '卡尾号',
+            title: '卡号',
             dataIndex: 'bank_number',
             width: 180,
             render: (str: string) => `${str.substring(0, 6)}******${str.substring(str.length - 4)}`

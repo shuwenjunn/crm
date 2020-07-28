@@ -2,27 +2,27 @@
 
 
 import React from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { bindActionCreators, Dispatch } from 'redux';
-import { Row, Col, Menu, Layout } from 'antd';
+import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
+import {bindActionCreators, Dispatch} from 'redux';
+import {Row, Col, Menu, Layout} from 'antd';
 import * as icons from '@ant-design/icons';
 
 
-import { RootState, appRedux } from 'reduxes';
-import { wrapper } from 'containers/components/base';
+import {RootState, appRedux} from 'reduxes';
+import {wrapper} from 'containers/components/base';
 import * as globalConfig from '&/config.js';
-import { headerMenu } from 'schema/menu';
-import { MenuElement, MenuElementHelper } from 'common/interface';
+import {headerMenu} from 'schema/menu';
+import {MenuElement, MenuElementHelper} from 'common/interface';
 import './index.less';
 
 
-export interface HeaderProps{
+export interface HeaderProps {
     app: RootState.AppState,
     appHelper: any
 }
 
-export interface HeaderState{
+export interface HeaderState {
     userMenu: JSX.Element;
     menuJSX: JSX.Element[];
     menuHelper: MenuElementHelper;
@@ -31,7 +31,7 @@ export interface HeaderState{
 @connect(
     (state: RootState.RootState, ownProps): Pick<HeaderProps, 'app'> => {
         console.log(" header 数据回流到这里-----》》》》》 ", state, ownProps)
-        return { app: state.app };
+        return {app: state.app};
     },
     (dispatch: Dispatch): Pick<HeaderProps, 'appHelper'> => {
         return {
@@ -39,12 +39,12 @@ export interface HeaderState{
         };
     }
 )
-class HeaderComponent extends React.PureComponent<HeaderProps, HeaderState>{
+class HeaderComponent extends React.PureComponent<HeaderProps, HeaderState> {
 
-    constructor(props: HeaderProps, context?: any){
+    constructor(props: HeaderProps, context?: any) {
         super(props, context);
         let menuHelper = new MenuElementHelper(headerMenu);
-        let { userMenu, menuJSX } = this.establishMenu(menuHelper);
+        let {userMenu, menuJSX} = this.establishMenu(menuHelper);
         this.state = {
             userMenu,
             menuJSX,
@@ -55,18 +55,19 @@ class HeaderComponent extends React.PureComponent<HeaderProps, HeaderState>{
     }
 
     transFormMenuItem(obj: MenuElement) {
+        console.log('oijbfdasffsd', obj)
         return (
             <Menu.Item key={obj.path}>
-                {obj.icon && <obj.icon />}
+                {obj.icon && <obj.icon/>}
                 {obj.url ? <a target="_blank" href={obj.url}>{obj.name}</a> : <Link to={obj.router}>{obj.name}</Link>}
             </Menu.Item>
         );
     }
 
-    establishMenu(menuHelper: MenuElementHelper): any{
+    establishMenu(menuHelper: MenuElementHelper): any {
         let logoutMenuItem = (
             <Menu.Item key="logout">
-                <icons.LogoutOutlined />
+                <icons.LogoutOutlined/>
                 <a href={`${globalConfig.getAPIPath()}${globalConfig.login.logout}`}>注销</a>
             </Menu.Item>
         );
@@ -74,7 +75,7 @@ class HeaderComponent extends React.PureComponent<HeaderProps, HeaderState>{
         let userMenuItems = null;
 
         let child = menuHelper.root.getChild();
-        let menuJSX = child.map( (level1: MenuElement)  => {
+        let menuJSX = child.map((level1: MenuElement) => {
             let transformedLevel1Menu;
 
             let child1 = level1.getChild();
@@ -85,11 +86,14 @@ class HeaderComponent extends React.PureComponent<HeaderProps, HeaderState>{
                         const level3menu = child2.map((level3: MenuElement) => {
                             return this.transFormMenuItem(level3);
                         });
-            
+
                         return (
-                            <Menu.ItemGroup key={level2.path}
-                                 title={level2.icon ? <span><level2.icon />{` ${level2.name}`}</span> : <span>{level2.name}</span>}>
-                                <Menu.Divider />
+                            <Menu.ItemGroup
+                                key={level2.path}
+                                title={level2.icon ? <span><level2.icon/>
+                                    {` ${level2.name}`}</span> : <span>{level2.name}</span>}
+                            >
+                                <Menu.Divider/>
                                 {level3menu}
                             </Menu.ItemGroup>
                         );
@@ -100,12 +104,12 @@ class HeaderComponent extends React.PureComponent<HeaderProps, HeaderState>{
 
                 transformedLevel1Menu = (
                     <Menu.SubMenu key={level1.path}
-                        title={level1.icon ? <span><level1.icon />{level1.name}</span> : level1.name}>
+                                  title={level1.icon ? <span><level1.icon/>
+                                      {level1.name}</span> : level1.name}>
                         {level2menu}
                     </Menu.SubMenu>
                 );
-            }
-            else {
+            } else {
                 transformedLevel1Menu = this.transFormMenuItem(level1);
             }
 
@@ -119,12 +123,12 @@ class HeaderComponent extends React.PureComponent<HeaderProps, HeaderState>{
         })
 
         const userMenu = (
-                <Menu.SubMenu title={<icons.GithubFilled style={{ fontSize: "24px" }}/> }>
-                    {userMenuItems && userMenuItems[0] ? userMenuItems : null}
-                    <Menu.Divider />
-                    {logoutMenuItem}
-                </Menu.SubMenu>
-            );
+            <Menu.SubMenu title={<icons.GithubFilled style={{fontSize: "24px"}}/>}>
+                {userMenuItems && userMenuItems[0] ? userMenuItems : null}
+                <Menu.Divider/>
+                {logoutMenuItem}
+            </Menu.SubMenu>
+        );
 
         return {
             menuJSX,
@@ -132,20 +136,20 @@ class HeaderComponent extends React.PureComponent<HeaderProps, HeaderState>{
         };
     }
 
-    toggle(){
+    toggle() {
         this.props.appHelper.changeCollapse();
     }
 
     render() {
         return (
-            <Layout.Header className="site-layout-background" style={{ padding: 0 }}>
+            <Layout.Header className="site-layout-background" style={{padding: 0}}>
                 <Row>
                     <Col flex="32px">
-                        { this.props.app.isCollapsed ? 
-                            <icons.MenuUnfoldOutlined className="trigger" onClick={this.toggle}/> : 
-                            <icons.MenuFoldOutlined className="trigger" onClick={this.toggle}/> }
+                        {this.props.app.isCollapsed ?
+                            <icons.MenuUnfoldOutlined className="trigger" onClick={this.toggle}/> :
+                            <icons.MenuFoldOutlined className="trigger" onClick={this.toggle}/>}
                     </Col>
-                    <Col flex="auto" style={{ textAlign: "end" }}>
+                    <Col flex="auto" style={{textAlign: "end"}}>
                         <Menu className="header-menu" mode="horizontal">
                             {this.state.menuJSX}
                             {this.state.userMenu}

@@ -31,8 +31,9 @@ export const headerMenu: MenuElementInterface[] = [
                 name: '个人',
                 child: [
                     {
-                        key: 'information',
+                        key: 'personal',
                         name: '个人详情',
+                        router: '/personal',
                         icon: icons.UserOutlined,
                     },
                     {
