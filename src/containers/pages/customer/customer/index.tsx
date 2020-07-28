@@ -8,7 +8,10 @@ import ImgPreview from 'containers/components/imgPreview';
 import RealNameDrawer from './components/realDrawer'
 import AddressDrawer from './components/addressDrawer'
 import BankCardDrawer from './components/bankcardDrawer'
+import {serverConfig} from 'schema/server'
 
+console.log('serverCOnfig', serverConfig)
+const apiServer = serverConfig.filter(it => it.flag === 'crm-pc')[0].url.replace('/interface/', '')
 
 const FormItem = Form.Item
 const {RangePicker} = DatePicker;
@@ -45,8 +48,12 @@ const Page = () => {
             ...handleRangePicker(values.create_time, 'YYYY-MM-DD HH:mm:ss', 'create_time__gte', 'create_time__lte')
         }
         for (let key in params) {
-            if (typeof params === 'string') {
+            if (params[key] === '') {
                 delete params[key]
+                continue
+            }
+            if (typeof params[key] === 'string') {
+                delete params[key].trim()
             }
         }
         // if (params.create_time) {

@@ -36,8 +36,8 @@ const config = {
 
 
     api: {  // 对后端请求的相关配置
-        host: 'http://localhost:12345',  // 调用ajax接口的地址, 默认值空, 如果是跨域的, 服务端要支持CORS
-        path: '/api',  // ajax请求的路径
+        host: 'http://localhost:3000',  // 调用ajax接口的地址, 默认值空, 如果是跨域的, 服务端要支持CORS
+        path: '/',  // ajax请求的路径
         timeout: 15000,  // 请求的超时时间, 单位毫秒
     },
   
@@ -51,7 +51,7 @@ const config = {
         // 2. 不使用sso, 使用我提供的一个登录界面
         validate: '/login',  // 校验用户信息, 表单的submit地址. 如果登录成功, 必须返回用户名
     
-        logout: '/logout',  // 退出的url, 用户点击退出时, 浏览器会直接跳转到这个链接
+        logout: 'login',  // 退出的url, 用户点击退出时, 浏览器会直接跳转到这个链接
     },
   
     upload: {  // 上传相关配置

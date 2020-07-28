@@ -84,7 +84,7 @@ export class Login extends React.PureComponent<LoginProps> {
                     >
                         <Input
                             prefix={<UserOutlined className="site-form-item-icon"/>}
-                            placeholder="Username"
+                            placeholder="账号"
                             onChange={this.handleUsernameInput}
                         />
                     </Form.Item>
@@ -95,20 +95,20 @@ export class Login extends React.PureComponent<LoginProps> {
                         <Input
                             prefix={<LockOutlined className="site-form-item-icon"/>}
                             type="password"
-                            placeholder="Password"
+                            placeholder="密码"
                             onChange={this.handlePasswordInput}
                         />
                     </Form.Item>
                     <Form.Item>
                         <Form.Item name="remember" valuePropName="checked" noStyle>
-                            <Checkbox>Remember me</Checkbox>
+                            <Checkbox>记住密码</Checkbox>
                         </Form.Item>
                     </Form.Item>
 
                     <Form.Item>
                         <Button type="primary" htmlType="submit" className="login-form-button"
                                 disabled={this.props.login.isLoading}>
-                            Log in
+                            登陆
                         </Button>
                     </Form.Item>
                 </Form>

@@ -48,6 +48,8 @@ const App: React.FC<DrawerProps> = (props, ref) => {
     const onClose = () => {
         form.resetFields()
         setVisible(false)
+        setRecord({})
+        setAttributeList([])
     }
 
     useImperativeHandle(ref, () => ({
@@ -153,7 +155,7 @@ const App: React.FC<DrawerProps> = (props, ref) => {
 
     return (
         <Drawer
-            title={optType==='add'?'添加产品':'编辑产品'}
+            title={optType === 'add' ? '添加产品' : '编辑产品'}
             placement="right"
             closable={false}
             onClose={onClose}
