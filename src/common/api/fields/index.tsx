@@ -2,5 +2,5 @@
 
 
 export { BaseField } from './baseField';
-export { NumberField } from './numberField';
-export { StringField } from './stringField';
+export { NumberField, numberParser } from './numberField';
+export { StringField, stringParser } from './stringField';

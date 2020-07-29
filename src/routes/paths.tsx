@@ -11,8 +11,11 @@ import {Welcome} from 'containers/pages/welcome';
 import Customer from 'containers/pages/customer/customer'
 import Brand from 'containers/pages/product/brand'
 import Goods from 'containers/pages/goods/goods'
+import School from 'containers/pages/goods/school'
+import Major from 'containers/pages/goods/major'
 import Product from 'containers/pages/product/product'
 import Personal from 'containers/pages/user/personal'
+import ModifiyPassword from 'containers/pages/user/modifiyPassword'
 
 export const paths: RouteConfig[] = [
     {
@@ -59,10 +62,26 @@ export const paths: RouteConfig[] = [
                 component: Goods as any,
             },
             {
+                path: "/school",
+                exact: true,
+                component: School as any,
+            },
+            {
+                path: "/major",
+                exact: true,
+                component: Major as any,
+            },
+            {
                 path: "/personal",
                 exact: true,
                 component: Personal as any,
             },
+            {
+                path: "/modifiyPassword",
+                exact: true,
+                component: ModifiyPassword as any,
+            },
+            
         ]
     },
 

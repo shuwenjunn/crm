@@ -64,6 +64,16 @@ export const sidebarMenu: MenuElementInterface[] = [
                 name: '商品列表',
                 router: "/goods",
             },
+            {
+                key: 'school',
+                name: '学校列表',
+                router: "/school",
+            },
+            {
+                key: 'major',
+                name: '专业列表',
+                router: "/major",
+            },
         ],
     },
 ];

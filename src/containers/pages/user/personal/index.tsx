@@ -1,14 +1,19 @@
-import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react'
-import {apiRouter} from 'common/api'
+import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react'
+import { connect } from 'react-redux';
+import { RootState, userRedux } from 'reduxes';
+import { apiRouter } from 'common/api'
 import DescribeList from 'containers/components/describeList'
+import { bindActionCreators, Dispatch } from "redux";
+import { IGender } from 'common/interface'
 
-
-interface Iprops {
-
+export interface UserInfoProps {
+    user: RootState['user'],
+    getData: any,
+    history: any
 }
 
-const App: React.FC<Iprops> = (props, ref) => {
-    const [data, setData] = useState<any>({department_role_list: []})
+const App: React.FC<UserInfoProps> = (props, ref) => {
+    const [data, setData] = useState<any>({ department_role_list: [] })
 
     useEffect(() => {
         fetchData()
@@ -25,20 +30,20 @@ const App: React.FC<Iprops> = (props, ref) => {
         }
     }
 
-    const genderMap = {
+    const genderMap: IGender = {
         man: '男',
         woman: '女',
         unknow: '未知',
     }
 
     return (
-        <div style={{padding: 60}}>
+        <div style={{ padding: 60 }}>
             <DescribeList
                 data={[
-                    {label: '姓名', value: data.name},
-                    {label: '性别', value: genderMap[data.gender]},
-                    {label: '昵称', value: data.nick},
-                    {label: '工号', value: data.work_number},
+                    { label: '姓名', value: data.name },
+                    { label: '性别', value: genderMap[(data.gender as keyof IGender)] },
+                    { label: '昵称', value: data.nick },
+                    { label: '工号', value: data.work_number },
                     {
                         label: '部门职位',
                         value: (
@@ -56,9 +61,9 @@ const App: React.FC<Iprops> = (props, ref) => {
                             </div>
                         ),
                     },
-                    {label: '生日', value: data.birthday},
-                    {label: '手机号', value: data.phone},
-                    {label: '邮箱', value: data.email},
+                    { label: '生日', value: data.birthday },
+                    { label: '手机号', value: data.phone },
+                    { label: '邮箱', value: data.email },
                 ]}
                 width={100}
             />
@@ -66,4 +71,13 @@ const App: React.FC<Iprops> = (props, ref) => {
     )
 }
 
-export default forwardRef(App as any)
+export default connect(
+    (state: Pick<RootState, 'user'>, ownProps): Pick<UserInfoProps, 'user'> => {
+        return { user: state.user };
+    },
+    (dispatch: Dispatch): Pick<UserInfoProps, 'getData'> => {
+        return {
+            getData: bindActionCreators(userRedux.actions(), dispatch),
+        };
+    }
+)(forwardRef(App as any))

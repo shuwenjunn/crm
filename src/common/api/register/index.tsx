@@ -13,6 +13,8 @@ export class ApiRouter{
     constructor(apiConfig: any){
         this.serverRegister = new ServerRegister()
         this.loadApi(apiConfig)
+
+        console.log('api regist is running')
     }
 
     router(serverFlag: string, apiName: string): BaseApi{
@@ -43,7 +45,9 @@ export class ApiRouter{
                         throw new Error(`[ notes ] ${serverName} was not registed ...`)
                     }
                     let { server, apiRegister } = serverHelper[serverName];
+
                     let apiObj = new api.type(api.name, server, api.descriptions);
+                    
                     api.request.map(
                         (item: any) => {
                             let fieldObj = new item.type();

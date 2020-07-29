@@ -3,13 +3,11 @@
 
 import * as models from 'reduxes/models';
 
-
-export type AppState = Partial<models.AppModel>;
-export type LoginState = Partial<models.AccountModel>;
-
-
 export interface RootState {
-    login: LoginState;
-    app: AppState;
+    login: Partial<models.AccountModel>;
+    // 用户信息
+    user: Partial<models.UserinfoModel>;
+    app: Partial<models.AppModel>;
     router?: any;
 }
+

@@ -5,7 +5,9 @@ import { BaseField } from './baseField';
 
 
 export class NumberField extends BaseField<number>{
-    getDiscription(){
+    getDiscription() {
         return "number field"
     }
 }
+
+export const numberParser = new NumberField()

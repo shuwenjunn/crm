@@ -1,9 +1,7 @@
 import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react';
-import {Drawer, Button, Form, Input, Select, Checkbox, Table, Switch, Upload} from 'antd';
-import {PlusOutlined} from '@ant-design/icons'
-import {apiRouter} from 'common/api'
+import {Drawer, Button, Form, Input, Select, Checkbox, Table, Switch} from 'antd';
 import './setGoodsDrawer.less'
-import CustomUpload from './Upload'
+import CustomUpload from 'containers/components/upload'
 
 const FormItem = Form.Item
 
@@ -64,6 +62,13 @@ const App: React.FC<Iprops> = (props, ref) => {
                     newColumns.push({
                         title: cataData[i].text,
                         dataIndex: cataData[i].key,
+                        render: (text: string, record: any) => {
+                            return (
+                                <span style={{textDecoration: record.isRemove ? 'line-through' : 'none'}}>
+                                    {text}
+                                </span>
+                            )
+                        }
                     })
                     newData.push(categoryData[cataData[i].key])
                 }
@@ -74,7 +79,8 @@ const App: React.FC<Iprops> = (props, ref) => {
         const data = []
         for (let i in skuData) {
             const obj: any = {
-                key: skuData[i].join('&')
+                key: skuData[i].join('&'),
+                isRemove: false
             }
             for (let j in skuData[i]) {
                 const skuIt = skuData[i][j]
@@ -115,29 +121,18 @@ const App: React.FC<Iprops> = (props, ref) => {
         }
         setCategory(data)
 
-
-        console.log('eeeeeeeeeeeeeee-------->>>',e)
     }
 
-    const customRequest = async (e: any) => {
-
-        const file = e.file
-        let fileName = file.name
-
-        const fileData = {
-            fileObj: file,
-            fileName,
+    const onCateChange = (record: any, isRemove: boolean) => {
+        console.log('item----->>>', record)
+        const data: any = [...tableData]
+        const index = data.findIndex((item: any) => item.key === record.key)
+        if (isRemove) {
+            form.setFieldsValue({[`${record.key}__price`]: null})
+            form.setFieldsValue({[`${record.key}__count`]: null})
         }
-
-        const extraParams = {
-            store_type: 'goods',
-            role: 'goods',
-            upload_file: fileName
-        }
-
-        const result = await apiRouter.router('file', 'file.upload').upload(fileData, extraParams)
-
-        console.log('result', result)
+        data[index].isRemove = isRemove
+        setTableData(data)
     }
 
     return (
@@ -227,7 +222,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                                             name={`${record.key}__price`}
                                             style={{marginBottom: 0}}
                                         >
-                                            <Input placeholder="价格" type={'number'}/>
+                                            <Input disabled={record.isRemove} placeholder="价格" type={'number'}/>
                                         </FormItem>
                                     )
                                 }, {
@@ -238,8 +233,26 @@ const App: React.FC<Iprops> = (props, ref) => {
                                             name={`${record.key}__count`}
                                             style={{marginBottom: 0}}
                                         >
-                                            <Input placeholder="数量" type={'number'}/>
+                                            <Input disabled={record.isRemove} placeholder="数量" type={'number'}/>
                                         </FormItem>
+                                    )
+                                }, {
+                                    dataIndex: 'options',
+                                    title: '操作',
+                                    render: (text, record) => (
+                                        <span>
+                                            {record.isRemove ? (
+                                                <a style={{color: '#52c41a'}}
+                                                   onClick={() => onCateChange(record, false)}>恢复</a>
+                                            ) : (
+                                                <a
+                                                    onClick={() => onCateChange(record, true)}
+                                                >
+                                                    删除
+                                                </a>
+                                            )}
+
+                                        </span>
                                     )
                                 }]}
                             />
@@ -250,9 +263,10 @@ const App: React.FC<Iprops> = (props, ref) => {
                 <FormItem
                     name="status"
                     label={'上下架'}
+                    valuePropName="checked"
                     rules={[{required: true, message: '请选择上下架状态!'}]}
                 >
-                    <Switch/>
+                    <Switch checkedChildren="上架" unCheckedChildren="下架"/>
                 </FormItem>
 
                 <Form.Item

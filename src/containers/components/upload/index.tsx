@@ -1,9 +1,9 @@
-import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react'
-import {apiRouter} from 'common/api'
-import {Upload, Modal, message} from "antd";
-import {PlusOutlined} from '@ant-design/icons'
-import './upload.less'
-import {serverConfig} from 'schema/server'
+import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react'
+import { apiRouter } from 'common/api'
+import { Upload, Modal, message } from "antd";
+import { PlusOutlined } from '@ant-design/icons'
+import './index.less'
+import { serverConfig } from 'schema/server'
 
 const imgUrlPrefix = serverConfig.filter(it => it.flag === 'file')[0].url.replace('/interface/', '')
 
@@ -30,6 +30,7 @@ interface Iprops {
     fileType: string
     limit: number
     onChange: any
+    defaultFileList: any
 }
 
 const App: React.FC<Iprops> = (props, ref) => {
@@ -96,12 +97,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 url: `${imgUrlPrefix}${result.file_paths[0]}`,
             },]
             setFileList(list)
-            props.onChange([...fileList, {
-                uid: makeid(),
-                name: fileName,
-                status: 'done',
-                url: result.file_paths[0],
-            },])
+            props.onChange(list)
         } catch (e) {
             setFileList([...fileList, {
                 uid: makeid(),
@@ -113,7 +109,7 @@ const App: React.FC<Iprops> = (props, ref) => {
 
     const uploadButton = (
         <div>
-            <PlusOutlined/>
+            <PlusOutlined />
             <div className="ant-upload-text">上传</div>
         </div>
     )
@@ -127,6 +123,27 @@ const App: React.FC<Iprops> = (props, ref) => {
     }
 
 
+    useEffect(() => {
+        setFileList(getDefaultImgs())
+    }, [])
+
+    const getDefaultImgs = () => {
+        if (!(props.fileList && props.fileList.length > 0)) {
+            return []
+        }
+        const list = props.fileList.map(item => {
+            return {
+                uid: makeid(),
+                name: item.url,
+                status: 'done',
+                url: `${imgUrlPrefix}${item.url}`,
+            }
+        })
+        return list
+    }
+
+    console.log('propsfads', props)
+
     return (
         <div>
             {props.fileType === 'image' ? (
@@ -137,6 +154,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                         onPreview={handlePreview}
                         onRemove={onRemove}
                         customRequest={customRequest}
+
                     >
                         {fileList.length >= props.limit ? null : uploadButton}
                     </Upload>
@@ -146,7 +164,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                         footer={null}
                         onCancel={handleCancel}
                     >
-                        <img alt="example" style={{width: '100%'}} src={previewImage}/>
+                        <img alt="example" style={{ width: '100%' }} src={previewImage} />
                     </Modal>
                 </div>
             ) : null}
@@ -158,6 +176,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                         onPreview={handlePreview}
                         onRemove={onRemove}
                         customRequest={customRequest}
+
                     >
                         {fileList.length >= props.limit ? null : uploadButton}
                     </Upload>
@@ -168,7 +187,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                         onCancel={handleCancel}
                     >
 
-                        <video style={{width: '100%'}} src={previewImage}/>
+                        <video style={{ width: '100%' }} src={previewImage} />
                     </Modal>
                 </div>
             ) : null}

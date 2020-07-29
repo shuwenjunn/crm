@@ -18,6 +18,7 @@ class Wrapper {
             }
 
             render(): any{
+                console.log('this.props-------->>>',this.props)
                 return <wrapper.component {...this.props}/>
             }
 

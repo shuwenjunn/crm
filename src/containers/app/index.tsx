@@ -40,6 +40,7 @@ class AppComponet extends React.Component<AppProps>{
     }
 
     verifyAuthorization(): boolean{
+        console.log('1111111')
         let token = TokenConstant.get();
         if( token && token.hasOwnProperty(TokenEnum.ACCESS_TOKEN) && token[TokenEnum.ACCESS_TOKEN] ){
             return true;
@@ -49,14 +50,13 @@ class AppComponet extends React.Component<AppProps>{
 
     render(){
         if( !this.verifyAuthorization() ){
-            console.log(this.props);
             this.props.history.push("/login");
         }
         return (
             <Layout style={{ height: "100%" }}>
                 <Sidebar />
                 <Layout className="site-layout">
-                    <Header /> 
+                    <Header {...this.props}/> 
                     <Content {...this.props}/>
                     <Footer/>
                 </Layout>

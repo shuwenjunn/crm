@@ -5,7 +5,9 @@ import { BaseField } from './baseField';
 
 
 export class StringField extends BaseField<string>{
-    getDiscription(){
+    getDiscription() {
         return "String field"
     }
 }
+
+export const stringParser = new StringField()

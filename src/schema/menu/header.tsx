@@ -11,22 +11,6 @@ export const headerMenu: MenuElementInterface[] = [
         name: "用户菜单",
         child: [
             {
-                key: 'account',
-                name: '账户',
-                child: [
-                    {
-                        key: 'detail',
-                        name: '账户详情',
-                        icon: icons.IdcardOutlined,
-                    },
-                    {
-                        key: 'reset-password',
-                        name: '修改密码',
-                        icon: icons.TagOutlined,
-                    },
-                ],
-            },
-            {
                 key: 'user',
                 name: '个人',
                 child: [
@@ -37,25 +21,10 @@ export const headerMenu: MenuElementInterface[] = [
                         icon: icons.UserOutlined,
                     },
                     {
-                        key: 'setting',
-                        name: '个人设置',
-                        icon: icons.SettingOutlined,
-                    },
-                    {
                         key: 'modify',
-                        name: '修改信息',
+                        name: '修改密码',
+                        router: '/modifiyPassword',
                         icon: icons.EditOutlined,
-                    },
-                ],
-            },
-            {
-                key: 'company',
-                name: '公司',
-                child: [
-                    {
-                        key: 'detail',
-                        name: '公司详情',
-                        icon: icons.HomeOutlined,
                     },
                 ],
             },

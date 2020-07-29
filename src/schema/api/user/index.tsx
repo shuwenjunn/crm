@@ -31,5 +31,27 @@ export const userApi: ApiInterface[] = [
                 msg: '账号密码错误',
             }
         }
+    },
+    { 
+        name: "staff.account.password.modify",
+        descriptions: "",
+        servers: ["crm-pc", 'test'],
+        type: api.UnAuthorizationApi,
+        request: [
+            {attr: 'new_password', type: fields.StringField},
+            {attr: 'old_password', type: fields.StringField},
+            {attr: 'repeat_password', type: fields.StringField},
+        ],
+        response:[
+        ],
+        mock: {
+            success:{
+
+            },
+            failure:{
+                code: '9999',
+                msg: '账号密码错误',
+            }
+        }
     }
 ]

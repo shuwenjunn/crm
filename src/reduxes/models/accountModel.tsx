@@ -9,6 +9,4 @@ export interface AccountModel {
     isLoading: boolean;
 }
 
-export enum AccountFilter {
-}
 

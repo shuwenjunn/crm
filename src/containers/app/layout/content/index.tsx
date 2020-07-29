@@ -76,14 +76,14 @@ class ContentComponet extends React.Component<ContentProps, ContentState>{
     componentWillMount() {
         this.updateTab(this.props);
     }
-  
+
     componentWillReceiveProps(nextProps: ContentProps) {
         this.updateTab(nextProps);
     }
 
     parseTabTitle(menuHelper: MenuElementHelper): Map<string, JSX.Element> {
         const tabTitleMap = new Map();
-    
+
         let addItem = ( item: MenuElement ) => {
             if (item.url) {
                 return;
@@ -103,14 +103,14 @@ class ContentComponet extends React.Component<ContentProps, ContentState>{
                 addItem(item);
             }
         };
-    
+
         menuHelper.elementMap.forEach(browseMenu);
-    
+
         // add 404 page for system
         tabTitleMap.set('/404', <span className="ant-layout-tab-text">Error</span>);
         return tabTitleMap;
     }
-  
+
     getRouteComponent(pathName: string): null | React.Component{
         let root = this.props.route;
         let prefix = root.path === "/" ? "" : root.path;
@@ -146,14 +146,14 @@ class ContentComponet extends React.Component<ContentProps, ContentState>{
             }
 
             let tabTitle = this.state.tabTitleMap.get(pathName);
-        
+
             if (globalConfig.tabMode.allowDuplicate === true) {
                 this.setState({ tabCounter: this.state.tabCounter + 1 });
                 pathName = pathName + this.state.tabCounter;
             }
-        
+
             this.setState({ currentTabKey: pathName });
-        
+
             let exist = false;
             for (let pane of this.state.tabPanes) {
                 if (pane.key === pathName) {
@@ -161,7 +161,7 @@ class ContentComponet extends React.Component<ContentProps, ContentState>{
                     break;
                 }
             }
-        
+
             if (!exist && component !== null) {
                 this.state.tabPanes.push({
                     key: pathName,
@@ -181,7 +181,7 @@ class ContentComponet extends React.Component<ContentProps, ContentState>{
                     currentTabIndex = i;
                 }
             });
-  
+
             if (currentTabIndex > 0) {
                 nextTabKey = this.state.tabPanes[currentTabIndex - 1].key;
             } else if (currentTabIndex === 0 && this.state.tabPanes.length > 1) {
@@ -218,8 +218,8 @@ class ContentComponet extends React.Component<ContentProps, ContentState>{
                     {itemArray}
                 </Breadcrumb>
                 <div className="ant-layout-container">
-                    { 
-                        this.state.breadcrumb.content && 
+                    {
+                        this.state.breadcrumb.content &&
                         <this.state.breadcrumb.content {...this.props}/>
                     }
                 </div>
@@ -233,14 +233,14 @@ class ContentComponet extends React.Component<ContentProps, ContentState>{
             if (this.state.tabPanes.length === 0) {
                 return <div className="ant-layout-container"><Welcome /></div>;
             } else {
-                return ( 
+                return (
                     <Tabs activeKey={this.state.currentTabKey} type="editable-card"
-                             onEdit={this.onTabRemove} onChange={this.onTabChange}
-                             hideAdd className="ant-layout-tab">
+                          onEdit={this.onTabRemove} onChange={this.onTabChange}
+                          hideAdd className="ant-layout-tab">
                         {this.state.tabPanes.map( (pane: any) => (
-                            <Tabs.TabPane 
-                                tab={pane.title} 
-                                key={pane.key} 
+                            <Tabs.TabPane
+                                tab={pane.title}
+                                key={pane.key}
                                 closable={true}>
                                 <pane.content {...this.props}/>
                             </Tabs.TabPane>
@@ -253,17 +253,17 @@ class ContentComponet extends React.Component<ContentProps, ContentState>{
             return this.renderBreadCrumbItem();
         }
     }
-  
+
     render(){
         return (
             <Layout.Content
-                    className="site-layout-background"
-                    style={{
-                      margin: '6px 6px',
-                      padding: '4px 8px',
-                      minHeight: 280,
-                    }}
-                >
+                className="site-layout-background"
+                style={{
+                    margin: '6px 6px',
+                    padding: '4px 8px',
+                    minHeight: 280,
+                }}
+            >
                 {this.renderBody()}
             </Layout.Content>
         )

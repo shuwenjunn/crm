@@ -6,7 +6,5 @@ export interface AppModel {
     isCollapsed: boolean
 }
 
-export enum AppFilter {
-}
 
 

@@ -1,4 +1,4 @@
 'use strict'
 
 
-export { RootState, loginRedux, appRedux } from './container';
+export { RootState, loginRedux, appRedux, userRedux } from './container';
