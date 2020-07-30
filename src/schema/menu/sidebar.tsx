@@ -76,4 +76,17 @@ export const sidebarMenu: MenuElementInterface[] = [
             },
         ],
     },
+    {
+        key: 'sms',
+        name: '短信列表',
+        icon: icons.MessageOutlined,
+        child: [
+            {
+                key: 'sms',
+                name: '短信列表',
+                router: "/sms",
+            },
+
+        ],
+    },
 ];
