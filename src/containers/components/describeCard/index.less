@@ -1,0 +1,30 @@
+.describe-card-list {
+  margin: 8px 0;
+  &.bordered {
+    border-bottom: 1px solid #f2f6f7;
+  }
+  .line {
+    display: flex;
+    flex-wrap: nowrap;
+    &.bordered {
+      border-top: 1px solid #f2f6f7;
+    }
+    &.header {
+      background: #f2f6f7;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      flex: 1;
+      .label {
+        color: #999999;
+        margin-right: 10px;
+      }
+      .value {
+        color: #333333;
+      }
+    }
+  }
+}

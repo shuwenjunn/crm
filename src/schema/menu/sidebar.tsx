@@ -89,4 +89,17 @@ export const sidebarMenu: MenuElementInterface[] = [
 
         ],
     },
+    {
+        key: 'order',
+        name: '订单管理',
+        icon: icons.OrderedListOutlined,
+        child: [
+            {
+                key: 'order',
+                name: '订单列表',
+                router: "/order",
+            },
+
+        ],
+    },
 ];
