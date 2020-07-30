@@ -20,7 +20,8 @@ const App: React.FC<Iprops> = (props, ref) => {
     const [record, setRecord] = useState<any>({})
     const [loading, setLoading] = useState(false)
     const [optType, setOptType] = useState('')
-    const allBrand = useSearchAll('production.brand.searchall')
+    const allMajor = useSearchAll('university.major.searchall')
+    const allSchool = useSearchAll('university.school.searchall')
     const [form] = Form.useForm()
 
    
@@ -101,7 +102,6 @@ const App: React.FC<Iprops> = (props, ref) => {
                 </div>
             }
         >
-            {JSON.stringify(allBrand)}
             <Form form={form} onFinish={onFinish} {...layout}>
                 <FormItem
                     label="学校名称"
