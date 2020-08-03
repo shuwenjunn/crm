@@ -32,6 +32,7 @@ interface Iprops {
     onChange: any
     defaultFileList: any
     disabled?: boolean
+    defaultImgs?: string[]
 }
 
 const App: React.FC<Iprops> = (props, ref) => {
@@ -39,6 +40,7 @@ const App: React.FC<Iprops> = (props, ref) => {
     const [previewVisible, setPreviewVisible] = useState<boolean>(false)
     const [previewImage, setPreviewImage] = useState<string>('')
     const [fileList, setFileList] = useState<any[]>([])
+    const [imgFlag, setImgFlag] = useState(false)
 
     const handleCancel = () => setPreviewVisible(false);
 
@@ -93,10 +95,11 @@ const App: React.FC<Iprops> = (props, ref) => {
             const result = await apiRouter.router('file', 'file.upload').upload(fileData, extraParams)
             const list = [...fileList, {
                 uid: makeid(),
-                name: fileName,
+                name: `${imgUrlPrefix}${result.file_paths[0]}`,
                 status: 'done',
                 url: `${imgUrlPrefix}${result.file_paths[0]}`,
             },]
+            console.log('list---------->>>',list)
             setFileList(list)
             props.onChange(list)
         } catch (e) {
@@ -125,19 +128,22 @@ const App: React.FC<Iprops> = (props, ref) => {
 
 
     useEffect(() => {
-        setFileList(getDefaultImgs())
-    }, [])
+        if (getDefaultImgs().length > 0 && imgFlag === false) {
+            setFileList(getDefaultImgs())
+            setImgFlag(true)
+        }
+    })
 
     const getDefaultImgs = () => {
-        if (!(props.fileList && props.fileList.length > 0)) {
+        if (!(props.defaultImgs && props.defaultImgs.length > 0)) {
             return []
         }
-        const list = props.fileList.map(item => {
+        const list = props.defaultImgs.map(item => {
             return {
                 uid: makeid(),
-                name: item.url,
+                name: item,
                 status: 'done',
-                url: `${imgUrlPrefix}${item.url}`,
+                url: item,
             }
         })
         return list
@@ -177,7 +183,6 @@ const App: React.FC<Iprops> = (props, ref) => {
                         onRemove={onRemove}
                         customRequest={customRequest}
                         disabled={props.disabled ? true : false}
-
                     >
                         {fileList.length >= props.limit ? null : uploadButton}
                     </Upload>

@@ -1,9 +1,10 @@
-import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
-import { Drawer, Button, Form, Input, Select, Checkbox, Table, Switch } from 'antd';
+import React, { useState, useImperativeHandle, forwardRef, useEffect, useRef } from 'react';
+import { Drawer, Button, Form, Input, Select, Checkbox, Table, Switch, message } from 'antd';
 import { apiRouter } from 'common/api'
 import './setGoodsDrawer.less'
 import CustomUpload from 'containers/components/upload'
 import useSearchAll from 'containers/components/useSearchAll'
+import AddCateDrawer from '../../product/product/addCateDrawer'
 
 const FormItem = Form.Item
 
@@ -27,14 +28,16 @@ const App: React.FC<Iprops> = (props, ref) => {
     const [currProductCate, setCurrProductCate] = useState([]) // 当前选择的产品所对应的所有的分类
     const [cataData, setCataData] = useState<any[]>([]) // 可供勾选的分类 原数据
     const [loading, setLoading] = useState(false)
-
+    const addCateRef = useRef()
     const [form] = Form.useForm()
 
     const showDrawer = (record: any, optType: string) => {
         setVisible(true)
         setRecord(record)
         setOptType(optType)
-
+        if (optType === 'edit') {
+            getGoodsDetail(record.id)
+        }
     }
     const onClose = () => {
         setVisible(false)
@@ -47,9 +50,45 @@ const App: React.FC<Iprops> = (props, ref) => {
         form.resetFields()
     }
 
+    // 设置区域值
+    const setFieldsValue = (record: any) => {
+        console.log('record-------------->>>', record)
+        console.log('record-------------->>>', record.detail)
+        form.setFieldsValue({ 'production_id': record.production_id })
+        form.setFieldsValue({ 'market_price': record.market_price / 100 })
+        form.setFieldsValue({ 'despatch_type': record.despatch_type })
+        form.setFieldsValue({ 'school_id': record.school_id })
+        form.setFieldsValue({ 'major_id': record.major_id })
+        form.setFieldsValue({ 'duration': record.duration })
+        form.setFieldsValue({ 'title': record.title })
+        form.setFieldsValue({ 'description': record.description })
+        form.setFieldsValue({ 'remark': record.remark })
+        form.setFieldsValue({ 'use_status': record.use_status })
+        form.setFieldsValue({ 'slideshow': record.slideshow })
+        form.setFieldsValue({ 'detail': record.detail })
+        // form.setFieldsValue({ 'remark': record.remark })
+    }
+
     useImperativeHandle(ref, () => ({
         showDrawer
     }))
+
+    const getGoodsDetail = async (goods_id: number) => {
+        try {
+            const result = await apiRouter.router('crm-pc', 'production.goods.get').request({
+                goods_id
+            })
+            setRecord({
+                id: record.id,
+                ...result.goods_info
+            })
+            setFieldsValue({ ...result.goods_info })
+        } catch (error) {
+            console.log('error------->>', error)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const onFinish = async (values: any) => {
         console.log('value', values)
@@ -203,7 +242,7 @@ const App: React.FC<Iprops> = (props, ref) => {
         form.resetFields(['production_selected_cate'])
         setCataData([])
         setCategory({})
-
+        console.log('allCate----->>>', allCate)
         setCurrProductCate(allCate)
     }
 
@@ -223,6 +262,24 @@ const App: React.FC<Iprops> = (props, ref) => {
         setCataData(cataData)
     }
 
+    // 添加自定义分类
+    const openAddCateDrawer = () => {
+        // const newCateId = 1234
+        (addCateRef as any).current.showDrawer({ key: 1 }, 'add')
+    }
+
+    const onAddCustomerCate = (obj: any) => {
+        console.log('obj------>>>', obj)
+        if (currProductCate.filter(item => item.category === obj.category).length > 0) {
+            message.warning('不能添加重复分类')
+            return
+        }
+        setCurrProductCate([
+            ...currProductCate,
+            obj
+        ])
+    }
+
     return (
         <Drawer
             title={props.title}
@@ -231,7 +288,7 @@ const App: React.FC<Iprops> = (props, ref) => {
             onClose={onClose}
             visible={visible}
             width={1000}
-            destroyOnClose
+            destroyOnClose={true}
             footer={
                 <div
                     style={{
@@ -247,9 +304,13 @@ const App: React.FC<Iprops> = (props, ref) => {
                 </div>
             }
         >
+            <AddCateDrawer
+                ref={addCateRef}
+                onAdd={onAddCustomerCate}
+            />
             <Form
                 form={form}
-                name="brand"
+                name="goods"
                 onFinish={onFinish}
                 {...layout}
                 onValuesChange={onValuesChange}
@@ -275,13 +336,20 @@ const App: React.FC<Iprops> = (props, ref) => {
                     {form.getFieldValue('production_id') && (
                         <Form.Item
                             name="production_selected_cate"
-                            rules={[{ required: true, message: '请选择分类!' }]}
+                        // rules={[{ required: true, message: '请选择分类!' }]}
                         >
-                            <Select placeholder="请选择分类" mode='multiple' onChange={onSelectCate}>
-                                {currProductCate.map(d => (
-                                    <Select.Option value={d.category} key={d.category}>{d.category}</Select.Option>
-                                ))}
-                            </Select>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Select placeholder="请选择分类" mode='multiple' onChange={onSelectCate} style={{ flex: 1 }}>
+                                    {currProductCate.map(d => (
+                                        <Select.Option value={d.category} key={d.category}>{d.category}</Select.Option>
+                                    ))}
+                                </Select>
+                                <div style={{ marginLeft: 16 }}>
+                                    <Button type="primary" onClick={openAddCateDrawer}>
+                                        添加分类
+                                    </Button>
+                                </div>
+                            </div>
                         </Form.Item>
                     )}
 
@@ -482,12 +550,13 @@ const App: React.FC<Iprops> = (props, ref) => {
                 <Form.Item
                     name="slideshow"
                     label="商品轮播图片"
-                    valuePropName="fileList"
+                    // valuePropName="fileList"
                     extra="最多可上传5张商品轮播图片"
                     rules={[{ required: true, message: '请上传商品轮播图!' }]}
                 >
                     <CustomUpload
                         fileType='image'
+                        defaultImgs={record.slideshow}
                         limit={5}
                         onChange={(value: any) => {
                             form.setFieldsValue({ 'slideshow': value })
@@ -498,7 +567,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 <Form.Item
                     name="video_display"
                     label="商品视频"
-                    valuePropName="fileList"
+                    // valuePropName="fileList"
                     extra="最多可上传1段商品视频"
                     rules={[{ required: true, message: '请上传1段商品视频!' }]}
                 >
@@ -508,19 +577,20 @@ const App: React.FC<Iprops> = (props, ref) => {
                         onChange={(value: any) => {
                             form.setFieldsValue({ 'video_display': value })
                         }}
-
+                        defaultImgs={[record.video_display]}
                     />
                 </Form.Item>
 
                 <Form.Item
                     name="detail"
-                    label="图文详情"
-                    valuePropName="fileList"
-                    extra="最多可上传5张详情图片"
-                    rules={[{ required: true, message: '请上传详情图!' }]}
+                    label="商品详情图片"
+                    // valuePropName="fileList"
+                    extra="最多可上传6张详情图片"
+                    rules={[{ required: true, message: '请上传商品详情图!' }]}
                 >
                     <CustomUpload
                         fileType='image'
+                        defaultImgs={record.detail}
                         limit={6}
                         onChange={(value: any) => {
                             form.setFieldsValue({ 'detail': value })
@@ -528,7 +598,6 @@ const App: React.FC<Iprops> = (props, ref) => {
                     />
                 </Form.Item>
             </Form>
-
 
         </Drawer>
     )

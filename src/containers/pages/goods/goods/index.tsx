@@ -154,7 +154,7 @@ const Page = () => {
                         <a
                             onClick={() => {
                                 setDrawerTitle('编辑商品');
-                                (drawerRef.current as any).showDrawer({}, 'edit')
+                                (drawerRef.current as any).showDrawer(record, 'edit')
                             }}
                         >
                             编辑

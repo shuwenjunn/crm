@@ -1,15 +1,14 @@
-import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react';
-import {Drawer, Button, Form, Input, message} from 'antd';
-import {PlusCircleOutlined, MinusCircleOutlined} from '@ant-design/icons'
+import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
+import { Drawer, Button, Form, Input, message } from 'antd';
+import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import _ from 'lodash'
 import './addCateDrawer.less'
 
 const FormItem = Form.Item
 
 interface Iprops {
-    onAdd(obj: any): void
-
-    onEdit(obj: any): void
+    onAdd?: (obj: any) => void
+    onEdit?: (obj: any) => void
 }
 
 // @ts-ignore
@@ -27,7 +26,7 @@ const App: React.FC<Iprops> = (props, ref) => {
         setOptType(optType)
         console.log('record--------->>>', record)
         if (optType === 'edit') {
-            form.setFieldsValue({'category': record.category})
+            form.setFieldsValue({ 'category': record.category })
             let arr = []
             for (let index = 0; index < record.attribute_list.length; index++) {
                 console.log('index------>>', index)
@@ -89,8 +88,8 @@ const App: React.FC<Iprops> = (props, ref) => {
     }
 
     const layout = {
-        labelCol: {span: 5},
-        wrapperCol: {span: 19},
+        labelCol: { span: 5 },
+        wrapperCol: { span: 19 },
     }
 
     const addField = () => {
@@ -126,7 +125,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                         textAlign: 'right',
                     }}
                 >
-                    <Button onClick={onClose} style={{marginRight: 8}}>
+                    <Button onClick={onClose} style={{ marginRight: 8 }}>
                         取消
                     </Button>
                     <Button onClick={form.submit} type="primary">
@@ -139,9 +138,9 @@ const App: React.FC<Iprops> = (props, ref) => {
                 <FormItem
                     label="分类名称"
                     name="category"
-                    rules={[{required: true, message: '请输入分类名称!'}]}
+                    rules={[{ required: true, message: '请输入分类名称!' }]}
                 >
-                    <Input placeholder="分类名称" style={{width: '85%'}}/>
+                    <Input placeholder="分类名称" style={{ width: '85%' }} />
                 </FormItem>
                 {fields.map((fieldId, index) => (
                     <FormItem
@@ -172,7 +171,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                                 // })
                             ]}
                         >
-                            <Input placeholder="分类属性" style={{width: '85%'}}/>
+                            <Input placeholder="分类属性" style={{ width: '85%' }} />
                         </FormItem>
                         {index === fields.length - 1 ? (
                             <span>
@@ -182,16 +181,16 @@ const App: React.FC<Iprops> = (props, ref) => {
                                         onClick={() => removeField(fieldId)}
                                     />
                                 )}
-                                <PlusCircleOutlined className="dynamic-delete-button" onClick={addField}/>
+                                <PlusCircleOutlined className="dynamic-delete-button" onClick={addField} />
                             </span>
                         ) : (
-                            <span>
-                                <MinusCircleOutlined
-                                    className="dynamic-delete-button"
-                                    onClick={() => removeField(fieldId)}
-                                />
-                            </span>
-                        )}
+                                <span>
+                                    <MinusCircleOutlined
+                                        className="dynamic-delete-button"
+                                        onClick={() => removeField(fieldId)}
+                                    />
+                                </span>
+                            )}
                     </FormItem>
                 ))}
             </Form>

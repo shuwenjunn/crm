@@ -29,7 +29,7 @@ const App: React.FC<Iprops> = (props, ref) => {
         setRecord(record)
         setOptType(optType)
         setFieldValue(record)
-        optType === 'edit' && form.setFieldsValue({ 'logo_url': [{ url: record.logo_url }] })
+        optType === 'edit' && form.setFieldsValue({ 'logo_url': [record.logo_url] })
     }
 
     const setFieldValue = (obj: any) => {

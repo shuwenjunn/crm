@@ -58,6 +58,25 @@ export const goodsApi: ApiInterface[] = [
         }
     },
     {
+        name: "production.goods.get",
+        descriptions: "",
+        servers: ["crm-pc", 'test'],
+        type: api.UnAuthorizationApi,
+        request: [
+            { attr: 'goods_id', type: fields.NumberField },
+        ],
+        response: [
+            { attr: 'goods_info', type: fields.StringField },
+        ],
+        mock: {
+            success: {},
+            failure: {
+                code: '9999',
+                msg: '获取数据失败',
+            }
+        }
+    },
+    {
         name: "university.school.search",
         descriptions: "",
         servers: ["crm-pc", 'test'],
