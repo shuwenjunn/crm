@@ -2,8 +2,12 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Form, Input, Button, Table, Select } from 'antd'
 import { apiRouter } from 'common/api'
 import SetGoodsDrawer from './setGoodsDrawer';
-
+import ImgPreview from 'containers/components/imgPreview';
 import useSearchAll from 'containers/components/useSearchAll'
+
+import { serverConfig } from 'schema/server'
+
+const imgUrlPrefix = serverConfig.filter(it => it.flag === 'file')[0].url.replace('/interface/', '')
 
 const Option = Select.Option
 const FormItem = Form.Item
@@ -47,22 +51,95 @@ const Page = () => {
         }
     }
 
+    const refreshData = () => {
+        fetchTableData(pagination.current)
+    }
+
     const columns = [
         {
             title: '商品主图',
-            dataIndex: 'main_img',
+            dataIndex: 'slideshow',
+            render: (text: string[]) => {
+                return (
+                    <ImgPreview
+                        url={`${text[0]}`}
+                        title={'商品主图'}
+                        customerStyle={{
+                            width: 88,
+                            height: 88,
+                            cursor: "pointer"
+                        }}
+                    />
+                )
+            }
         },
         {
             title: '商品名称',
-            dataIndex: 'name',
+            dataIndex: 'title',
         },
         {
             title: '商品缩略图',
-            dataIndex: 'phone',
+            dataIndex: 'thumbnail',
+            render: (text: string, record: any) => {
+                return (
+                    <ImgPreview
+                        url={`${record.slideshow[0]}`}
+                        title={'商品主图'}
+                        customerStyle={{
+                            width: 88,
+                            height: 88,
+                            cursor: "pointer"
+                        }}
+                    />
+                )
+            }
         },
         {
-            title: '商品名称',
-            dataIndex: 'name',
+            title: '学校',
+            dataIndex: 'school_name',
+        },
+        {
+            title: '专业',
+            dataIndex: 'major_name',
+        },
+        {
+            title: '学年',
+            dataIndex: 'duration',
+            render: (text, record) => {
+                // <Select.Option value='one_year'>1年</Select.Option>
+                // <Select.Option value='one_half_year'>1.5年</Select.Option>
+                // <Select.Option value='two_year'>2年</Select.Option>
+                // <Select.Option value='two_half_year'>2.5年</Select.Option>
+                // <Select.Option value='other'>其他</Select.Option>
+                const map = {
+                    one_year: '1年',
+                    one_half_year: '1.5年',
+                    two_year: '2年',
+                    two_half_year: '2.5年',
+                    other: '其他',
+                }
+
+                return map[text]
+            }
+        },
+        {
+            title: '产品',
+            dataIndex: 'production_name',
+        },
+        {
+            title: '品牌',
+            dataIndex: 'brand_name',
+        },
+        {
+            title: '售价/元',
+            dataIndex: 'specification_list',
+            render: (text: any[], record) => {
+                const arr = text.map(item => item.sale_price)
+                const min = Math.min.apply(Math, arr)
+                const max = Math.max.apply(Math, arr)
+
+                return `${(min / 100).toFixed(2)}~${(max / 100).toFixed(2)}`
+            }
         },
         {
             title: '创建时间',
@@ -96,6 +173,7 @@ const Page = () => {
                 title={drawerTitle}
                 ref={drawerRef}
                 allMajor={allMajor}
+                refreshData={refreshData}
                 allSchool={allSchool}
             />
 
@@ -124,7 +202,7 @@ const Page = () => {
                         optionFilterProp="children"
                         filterOption={(input, option) => option.props.children.indexOf(input.trim()) >= 0}
                         allowClear
-                        style={{width:174}}
+                        style={{ width: 174 }}
                     >
                         {allSchool.map(item => (
                             <Option key={item.id} value={item.id}>{item.name}</Option>
@@ -141,7 +219,7 @@ const Page = () => {
                         optionFilterProp="children"
                         filterOption={(input, option) => option.props.children.indexOf(input.trim()) >= 0}
                         allowClear
-                        style={{width:174}}
+                        style={{ width: 174 }}
                     >
                         {allMajor.map(item => (
                             <Option key={item.id} value={item.id}>{item.name}</Option>

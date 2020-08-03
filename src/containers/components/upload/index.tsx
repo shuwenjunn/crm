@@ -143,8 +143,6 @@ const App: React.FC<Iprops> = (props, ref) => {
         return list
     }
 
-    console.log('propsfads', props)
-
     return (
         <div>
             {props.fileType === 'image' ? (
