@@ -31,6 +31,7 @@ interface Iprops {
     limit: number
     onChange: any
     defaultFileList: any
+    disabled?: boolean
 }
 
 const App: React.FC<Iprops> = (props, ref) => {
@@ -154,6 +155,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                         onPreview={handlePreview}
                         onRemove={onRemove}
                         customRequest={customRequest}
+                        disabled={props.disabled ? true : false}
 
                     >
                         {fileList.length >= props.limit ? null : uploadButton}
@@ -176,6 +178,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                         onPreview={handlePreview}
                         onRemove={onRemove}
                         customRequest={customRequest}
+                        disabled={props.disabled ? true : false}
 
                     >
                         {fileList.length >= props.limit ? null : uploadButton}

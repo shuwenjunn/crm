@@ -87,11 +87,11 @@ const App: React.FC<Iprops> = (props) => {
                 <FormItem
                     {...tailLayout}
                 >
-                    <Button style={{ marginRight: 8 }}>
-                        取消
-                    </Button>
-                    <Button type="primary" loading={loading} htmlType="submit">
+                    <Button style={{ marginRight: 8 }} type="primary" loading={loading} htmlType="submit">
                         确认
+                    </Button>
+                    <Button onClick={() => form.resetFields()}>
+                        重置
                     </Button>
                 </FormItem>
             </Form>

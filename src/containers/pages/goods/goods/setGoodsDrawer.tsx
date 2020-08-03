@@ -1,17 +1,20 @@
-import React, {useState, useImperativeHandle, forwardRef, useEffect} from 'react';
-import {Drawer, Button, Form, Input, Select, Checkbox, Table, Switch} from 'antd';
+import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
+import { Drawer, Button, Form, Input, Select, Checkbox, Table, Switch } from 'antd';
 import './setGoodsDrawer.less'
 import CustomUpload from 'containers/components/upload'
+import useSearchAll from 'containers/components/useSearchAll'
 
 const FormItem = Form.Item
 
 interface Iprops {
     title: string
+    allSchool: any[]
+    allMajor: any[]
 }
 
 // @ts-ignore
 const App: React.FC<Iprops> = (props, ref) => {
-    const [visible, setVisible] = useState(true)
+    const [visible, setVisible] = useState(false)
     const [record, setRecord] = useState({})
     const [data, setData] = useState({})
     const [optType, setOptType] = useState('')
@@ -19,7 +22,7 @@ const App: React.FC<Iprops> = (props, ref) => {
     const [tableData, setTableData] = useState<any[]>([])
     const [categoryData, setCategory] = useState<any>({})
     const [fileList, setFileList] = useState<any[]>([])
-
+    // const allProduct = useSearchAll('production.searchall')
 
     const [form] = Form.useForm()
 
@@ -39,18 +42,19 @@ const App: React.FC<Iprops> = (props, ref) => {
 
     const onFinish = (values: any) => {
         console.log('value', values)
+        console.log('table_data------->>>',tableData)
     }
 
     const layout = {
-        labelCol: {span: 3},
-        wrapperCol: {span: 21},
+        labelCol: { span: 3 },
+        wrapperCol: { span: 21 },
     }
 
     const cataData: any[] = [
-        {key: 'class', text: '班级分类', children: ['普通班', 'vip班']},
-        {key: 'service', text: '服务分类', children: ['一对一', '多对多', '多对一']},
-        {key: 'school', text: '学校', children: ['北大', '清华', '蓝翔']},
-        {key: 'major', text: '专业', children: ['计算机', '化工', '文学']},
+        { key: 'class', text: '班级分类', children: ['普通班', 'vip班'] },
+        { key: 'service', text: '服务分类', children: ['一对一', '多对多', '多对一'] },
+        { key: 'school', text: '学校', children: ['北大', '清华', '蓝翔'] },
+        { key: 'major', text: '专业', children: ['计算机', '化工', '文学'] },
     ]
 
     useEffect(() => {
@@ -64,7 +68,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                         dataIndex: cataData[i].key,
                         render: (text: string, record: any) => {
                             return (
-                                <span style={{textDecoration: record.isRemove ? 'line-through' : 'none'}}>
+                                <span style={{ textDecoration: record.isRemove ? 'line-through' : 'none' }}>
                                     {text}
                                 </span>
                             )
@@ -74,6 +78,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 }
             }
         }
+        console.log('newData---->>',newData)
         setColumns(newColumns)
         const skuData = cartesianProductOf(newData)
         const data = []
@@ -110,6 +115,9 @@ const App: React.FC<Iprops> = (props, ref) => {
 
 
     const onValuesChange = (e: any) => {
+
+        console.log('eeeeeeeee----', e)
+
         const data = {
             ...categoryData,
             ...e
@@ -119,6 +127,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 delete data[key]
             }
         }
+        console.log('data---------------->>>>',data)
         setCategory(data)
 
     }
@@ -127,10 +136,10 @@ const App: React.FC<Iprops> = (props, ref) => {
         console.log('item----->>>', record)
         const data: any = [...tableData]
         const index = data.findIndex((item: any) => item.key === record.key)
-        if (isRemove) {
-            form.setFieldsValue({[`${record.key}__price`]: null})
-            form.setFieldsValue({[`${record.key}__count`]: null})
-        }
+        // if (isRemove) {
+        //     form.setFieldsValue({ [`${record.key}__price`]: null })
+        //     form.setFieldsValue({ [`${record.key}__count`]: null })
+        // }
         data[index].isRemove = isRemove
         setTableData(data)
     }
@@ -142,14 +151,14 @@ const App: React.FC<Iprops> = (props, ref) => {
             closable={false}
             onClose={onClose}
             visible={visible}
-            width={900}
+            width={1000}
             footer={
                 <div
                     style={{
                         textAlign: 'right',
                     }}
                 >
-                    <Button onClick={onClose} style={{marginRight: 8}}>
+                    <Button onClick={onClose} style={{ marginRight: 8 }}>
                         取消
                     </Button>
                     <Button onClick={form.submit} type="primary">
@@ -170,7 +179,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 <Form.Item
                     label="报考产品"
                     name="product_id"
-                    rules={[{required: true, message: '请选择产品!'}]}
+                    rules={[{ required: true, message: '请选择产品!' }]}
                 >
                     <Select placeholder="产品">
                         <Select.Option value="demo">我是产品</Select.Option>
@@ -184,8 +193,8 @@ const App: React.FC<Iprops> = (props, ref) => {
                             <FormItem
                                 name={item.key}
                                 key={item.key}
-                                label={<div style={{color: '#666'}}>{item.text}</div>}
-                                style={{marginBottom: 0}}
+                                label={<div style={{ color: '#666' }}>{item.text}</div>}
+                                style={{ marginBottom: 0 }}
                             >
                                 <Checkbox.Group>
                                     {item.children.map(it => (
@@ -199,13 +208,13 @@ const App: React.FC<Iprops> = (props, ref) => {
                 <FormItem
                     label="统一价"
                     required={true}
-                    style={{marginBottom: 0}}
+                    style={{ marginBottom: 0 }}
                 >
                     <FormItem
                         name="username"
-                        rules={[{required: true, message: '请输入统一价!'}]}
+                        rules={[{ required: true, message: '请输入统一价!' }]}
                     >
-                        <Input placeholder="统一价" type={'number'}/>
+                        <Input placeholder="统一价" type={'number'} />
                     </FormItem>
                     {columns.length > 0 && (
                         <FormItem
@@ -215,14 +224,35 @@ const App: React.FC<Iprops> = (props, ref) => {
                                 size='small'
                                 pagination={false}
                                 dataSource={tableData}
-                                columns={[...columns, {
+                                // rowClassName={record=>record.isRemove?'removed':'normal'}
+                                columns={[{
+                                    dataIndex: 'specifications_url',
+                                    title: '缩略图',
+                                    render: (text, record) => (
+                                        <Form.Item
+                                            name={`${record.key}__imgurl`}
+                                            style={{ marginBottom: 0 }}
+                                            rules={[{ required: !record.isRemove, message: '请上传缩略图!' }]}
+                                        >
+                                            <CustomUpload
+                                                fileType='image'
+                                                limit={1}
+                                                disabled={record.isRemove}
+                                                onChange={(value: any) => {
+                                                    form.setFieldsValue({ [`${record.key}__imgurl`]: value })
+                                                }}
+                                            />
+                                        </Form.Item>
+                                    )
+                                }, ...columns, {
                                     dataIndex: 'price', title: '价格',
                                     render: (text, record) => (
                                         <FormItem
                                             name={`${record.key}__price`}
-                                            style={{marginBottom: 0}}
+                                            style={{ marginBottom: 0 }}
+                                            rules={[{ required: !record.isRemove, message: '请填写价格!' }]}
                                         >
-                                            <Input disabled={record.isRemove} placeholder="价格" type={'number'}/>
+                                            <Input disabled={record.isRemove} placeholder="价格" type={'number'} />
                                         </FormItem>
                                     )
                                 }, {
@@ -231,9 +261,10 @@ const App: React.FC<Iprops> = (props, ref) => {
                                     render: (text, record) => (
                                         <FormItem
                                             name={`${record.key}__count`}
-                                            style={{marginBottom: 0}}
+                                            style={{ marginBottom: 0 }}
+                                            rules={[{ required: !record.isRemove, message: '请填写数量!' }]}
                                         >
-                                            <Input disabled={record.isRemove} placeholder="数量" type={'number'}/>
+                                            <Input disabled={record.isRemove} placeholder="数量" type={'number'} />
                                         </FormItem>
                                     )
                                 }, {
@@ -242,15 +273,15 @@ const App: React.FC<Iprops> = (props, ref) => {
                                     render: (text, record) => (
                                         <span>
                                             {record.isRemove ? (
-                                                <a style={{color: '#52c41a'}}
-                                                   onClick={() => onCateChange(record, false)}>恢复</a>
+                                                <a style={{ color: '#52c41a' }}
+                                                    onClick={() => onCateChange(record, false)}>恢复</a>
                                             ) : (
-                                                <a
-                                                    onClick={() => onCateChange(record, true)}
-                                                >
-                                                    删除
-                                                </a>
-                                            )}
+                                                    <a
+                                                        onClick={() => onCateChange(record, true)}
+                                                    >
+                                                        删除
+                                                    </a>
+                                                )}
 
                                         </span>
                                     )
@@ -264,9 +295,9 @@ const App: React.FC<Iprops> = (props, ref) => {
                     name="status"
                     label={'上下架'}
                     valuePropName="checked"
-                    rules={[{required: true, message: '请选择上下架状态!'}]}
+                    rules={[{ required: true, message: '请选择上下架状态!' }]}
                 >
-                    <Switch checkedChildren="上架" unCheckedChildren="下架"/>
+                    <Switch checkedChildren="上架" unCheckedChildren="下架" />
                 </FormItem>
 
                 <Form.Item
@@ -274,13 +305,13 @@ const App: React.FC<Iprops> = (props, ref) => {
                     label="商品轮播"
                     valuePropName="fileList"
                     extra="最多可上传5张"
-                    rules={[{required: true, message: '请上传商品轮播图!'}]}
+                    rules={[{ required: true, message: '请上传商品轮播图!' }]}
                 >
                     <CustomUpload
                         fileType='image'
                         limit={5}
                         onChange={(value: any) => {
-                            form.setFieldsValue({'upload': value})
+                            form.setFieldsValue({ 'upload': value })
                         }}
                     />
                 </Form.Item>
@@ -295,8 +326,9 @@ const App: React.FC<Iprops> = (props, ref) => {
                         fileType='video'
                         limit={1}
                         onChange={(value: any) => {
-                            form.setFieldsValue({'video': value})
+                            form.setFieldsValue({ 'video': value })
                         }}
+
                     />
                 </Form.Item>
             </Form>

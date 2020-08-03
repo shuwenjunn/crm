@@ -1,22 +1,27 @@
-import React, {useState, useEffect, useRef} from 'react'
-import {Form, Input, Button, Table} from 'antd'
-import {apiRouter} from 'common/api'
+import React, { useState, useEffect, useRef } from 'react'
+import { Form, Input, Button, Table, Select } from 'antd'
+import { apiRouter } from 'common/api'
 import SetGoodsDrawer from './setGoodsDrawer';
 
+import useSearchAll from 'containers/components/useSearchAll'
+
+const Option = Select.Option
 const FormItem = Form.Item
 
 const Page = () => {
     const drawerRef = useRef()
     const [form] = Form.useForm()
     const [searchInfo, setSearchInfo] = useState({})
-    const [pagination, setPagination] = useState<any>({showQuickJumper: true, current: 1})
+    const [pagination, setPagination] = useState<any>({ showQuickJumper: true, current: 1 })
     const [data, setData] = useState<any[]>([])
     const [drawerTitle, setDrawerTitle] = useState('')
     const [loading, setLoading] = useState(false)
 
+    const allMajor = useSearchAll('university.major.searchall')
+    const allSchool = useSearchAll('university.school.searchall')
 
     const onFinish = (values: any) => {
-        setPagination({showQuickJumper: true, current: 1})
+        setPagination({ showQuickJumper: true, current: 1 })
         setSearchInfo({
             ...values,
         })
@@ -29,11 +34,11 @@ const Page = () => {
     const fetchTableData = async (current = 1) => {
         setLoading(true)
         try {
-            const result = await apiRouter.router('crm-pc', 'customer.search').request({
+            const result = await apiRouter.router('crm-pc', 'production.goods.search').request({
                 search_info: JSON.stringify(searchInfo),
                 current_page: current
             })
-            setPagination({...pagination, total: result.total, current: current})
+            setPagination({ ...pagination, total: result.total, current: current })
             setData(result.data_list)
         } catch (error) {
             console.log('error------->>', error)
@@ -43,6 +48,14 @@ const Page = () => {
     }
 
     const columns = [
+        {
+            title: '商品主图',
+            dataIndex: 'main_img',
+        },
+        {
+            title: '商品名称',
+            dataIndex: 'name',
+        },
         {
             title: '商品缩略图',
             dataIndex: 'phone',
@@ -63,7 +76,7 @@ const Page = () => {
                     <span>
                         <a
                             onClick={() => {
-                                setDrawerTitle('编辑品牌');
+                                setDrawerTitle('编辑商品');
                                 (drawerRef.current as any).showDrawer({}, 'edit')
                             }}
                         >
@@ -80,15 +93,60 @@ const Page = () => {
     return (
         <div>
             <SetGoodsDrawer
-                ref={drawerRef}
                 title={drawerTitle}
+                ref={drawerRef}
+                allMajor={allMajor}
+                allSchool={allSchool}
             />
 
             <Form form={form} name="search" layout="inline" onFinish={onFinish}>
                 <FormItem
-                    name="nick"
+                    name="title"
                 >
-                    <Input placeholder="品牌名称"/>
+                    <Input allowClear placeholder="商品名称" />
+                </FormItem>
+                <FormItem
+                    name="province"
+                >
+                    <Input allowClear placeholder="学校所在省" />
+                </FormItem>
+                <FormItem
+                    name="city"
+                >
+                    <Input allowClear placeholder="学校所在市" />
+                </FormItem>
+                <FormItem
+                    name="school_id"
+                >
+                    <Select
+                        placeholder="学校"
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option) => option.props.children.indexOf(input.trim()) >= 0}
+                        allowClear
+                        style={{width:174}}
+                    >
+                        {allSchool.map(item => (
+                            <Option key={item.id} value={item.id}>{item.name}</Option>
+                        ))}
+                    </Select>
+
+                </FormItem>
+                <FormItem
+                    name="major_id"
+                >
+                    <Select
+                        placeholder="专业"
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option) => option.props.children.indexOf(input.trim()) >= 0}
+                        allowClear
+                        style={{width:174}}
+                    >
+                        {allMajor.map(item => (
+                            <Option key={item.id} value={item.id}>{item.name}</Option>
+                        ))}
+                    </Select>
                 </FormItem>
                 <FormItem>
                     <Button
@@ -98,7 +156,7 @@ const Page = () => {
                         搜索
                     </Button>
                     <Button
-                        style={{margin: '0 8px'}}
+                        style={{ margin: '0 8px' }}
                         onClick={() => {
                             form.resetFields()
                         }}
@@ -106,14 +164,14 @@ const Page = () => {
                         重置
                     </Button>
                     <Button
-                        style={{margin: '0 8px'}}
+                        style={{ margin: '0 8px' }}
                         type="primary"
                         onClick={() => {
                             setDrawerTitle('添加商品');
                             (drawerRef.current as any).showDrawer({}, 'add')
                         }}
                     >
-                        添加品牌
+                        添加商品
                     </Button>
                 </FormItem>
             </Form>
@@ -122,7 +180,7 @@ const Page = () => {
                 dataSource={data}
                 size={'small'}
                 loading={loading}
-                style={{marginTop: 16}}
+                style={{ marginTop: 16 }}
                 onChange={(page) => fetchTableData(page.current)}
                 pagination={pagination}
                 rowKey={(record) => record.id}

@@ -4,6 +4,7 @@ import { apiRouter } from 'common/api'
 import SettingDrawer from './settingDrawer';
 import ImgPreview from 'containers/components/imgPreview';
 import { serverConfig } from 'schema/server'
+import {formatSearchValue} from 'common/utils/tools'
 
 const imgUrlPrefix = serverConfig.filter(it => it.flag === 'file')[0].url.replace('/interface/', '')
 
@@ -23,7 +24,7 @@ const Page = () => {
     const onFinish = (values: any) => {
         setPagination({ showQuickJumper: true, current: 1 })
         setSearchInfo({
-            ...values,
+            ...formatSearchValue(values),
         })
     }
 
@@ -91,7 +92,7 @@ const Page = () => {
                 <FormItem
                     name="name"
                 >
-                    <Input placeholder="请填写专业名称" />
+                    <Input placeholder="专业名称" />
                 </FormItem>
                 <FormItem>
                     <Button

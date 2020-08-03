@@ -91,7 +91,7 @@ const Page = () => {
                 <FormItem
                     name="name"
                 >
-                    <Input placeholder="请填写学校名称" />
+                    <Input placeholder="学校名称" />
                 </FormItem>
                 <FormItem>
                     <Button

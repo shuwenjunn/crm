@@ -20,18 +20,16 @@ const App: React.FC<Iprops> = (props, ref) => {
     const [record, setRecord] = useState<any>({})
     const [loading, setLoading] = useState(false)
     const [optType, setOptType] = useState('')
-    const allMajor = useSearchAll('university.major.searchall')
-    const allSchool = useSearchAll('university.school.searchall')
     const [form] = Form.useForm()
 
-   
+
 
     const showDrawer = (record: any, optType: string) => {
         setVisible(true)
         setRecord(record)
         setOptType(optType)
         setFieldValue(record)
-        form.setFieldsValue({ 'logo_url': [{ url: record.logo_url }] })
+        optType === 'edit' && form.setFieldsValue({ 'logo_url': [{ url: record.logo_url }] })
     }
 
     const setFieldValue = (obj: any) => {
@@ -114,7 +112,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                     name="logo_url"
                     label="学校logo"
                     valuePropName="fileList"
-                    extra="最多可上传1张"
+                    extra="最多上传一张png、jpg格式图片"
                     rules={[{ required: true, message: '请上传学校logo!' }]}
                 >
                     <CustomUpload

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Form, Input, Button, Table, Popconfirm } from 'antd'
 import { apiRouter } from 'common/api'
-
+import {formatSearchValue} from 'common/utils/tools'
 
 const FormItem = Form.Item
 
@@ -14,8 +14,9 @@ const Page = () => {
 
     const onFinish = (values: any) => {
         setPagination({ showQuickJumper: true, current: 1 })
+
         setSearchInfo({
-            ...values,
+            ...formatSearchValue(values),
         })
     }
 
@@ -63,7 +64,7 @@ const Page = () => {
 
     return (
         <div>
-    
+
             <Form form={form} name="search" layout="inline" onFinish={onFinish}>
                 <FormItem
                     name="phone"
