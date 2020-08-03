@@ -250,7 +250,7 @@ const Page = () => {
                                 ref={realnameRef}
                             />
                             <SubTitle
-                                title='用户信息'
+                                title='账单信息'
                                 rightCon={<span>账户余额：￥{(data.balance / 100).toFixed(2)}</span>}
                             />
 

@@ -178,7 +178,7 @@ const Page = () => {
                 <Switch
                     checkedChildren="上架"
                     unCheckedChildren="下架"
-                    checked={text ? true : false}
+                    checked={text==='enable' ? true : false}
                     onChange={() => onChangeStatus(record.id)}
                 />
             )

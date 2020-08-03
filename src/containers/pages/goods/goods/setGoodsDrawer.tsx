@@ -62,7 +62,7 @@ const App: React.FC<Iprops> = (props, ref) => {
         form.setFieldsValue({ 'title': record.title })
         form.setFieldsValue({ 'description': record.description })
         form.setFieldsValue({ 'remark': record.remark })
-        form.setFieldsValue({ 'use_status': record.use_status })
+        form.setFieldsValue({ 'use_status': record.use_status === 'forbiddent' ? false : true })
         form.setFieldsValue({ 'slideshow': record.slideshow })
         form.setFieldsValue({ 'detail': record.detail })
         form.setFieldsValue({ 'video_display': [record.video_display] })
@@ -192,7 +192,7 @@ const App: React.FC<Iprops> = (props, ref) => {
             specification_list: specification_list,//list # 规格列表
         }
         if (optType === 'edit') {
-            goods_info.use_status = values.use_status ? true : false
+            goods_info.use_status = values.use_status ? 'enable' : 'forbiddent'
         }
         console.log('goods_info------->>>', goods_info)
 
