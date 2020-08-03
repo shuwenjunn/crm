@@ -74,12 +74,12 @@ const App: React.FC<Iprops> = (props, ref) => {
         for (let i in specification_list) {
             production_selected_cate.push(...specification_list[i].specification_value_list.map(v => v.category))
         }
-        production_selected_cate = _.uniq(production_selected_cate)
+        production_selected_cate = _.uniq(production_selected_cate) // 可选分类
         form.setFieldsValue({ production_selected_cate })
         // 由分类项列出可供勾选的选择项
         onSelectCate(production_selected_cate)
         const currProductCate = allProduct.filter(item => item.id === record.production_id)[0].attribute_list
-        const cataData = []
+        let cataData = []
         for (let i in production_selected_cate) {
             for (let j in currProductCate) {
                 if (currProductCate[j].category === production_selected_cate[i]) {
@@ -91,7 +91,8 @@ const App: React.FC<Iprops> = (props, ref) => {
                 }
             }
         }
-        setCataData(cataData)
+        console.log('cataData------------>>>>', cataData)
+
         // ------------------------
         const allOptionValueArr = specification_list.map(item => item.specification_value_list).flat()
         const kv: any = {}
@@ -109,8 +110,28 @@ const App: React.FC<Iprops> = (props, ref) => {
             kv[`${key}`] = _.uniq(valArr)
         }
         console.log('kv--->>', kv)
+        if (production_selected_cate.length === cataData.length) {
+            setCataData(cataData)
+        } else {
+            const cataKeys = cataData.map(item => item.key)
+            let kvArr = []
+            for (let key in kv) {
+                kvArr.push(key)
+            }
+            for (let key in kvArr) {
+                if (!cataKeys.includes(kvArr[key])) {
+                    cataData.push({
+                        key: kvArr[key],
+                        text: kvArr[key],
+                        children: kv[kvArr[key]]
+                    })
+                }
+            }
+
+            setCataData(cataData)
+        }
         onValuesChange(kv)
-        console.log('specification_listspecification_listspecification_list', specification_list)
+        console.log('specification_listspecification_listspecification_list', production_selected_cate)
 
         for (let i in specification_list) {
             let values = specification_list[i].specification_value_list.map(item => item.attribute)
@@ -396,31 +417,24 @@ const App: React.FC<Iprops> = (props, ref) => {
                         </Select>
                     </Form.Item>
 
-                    {form.getFieldValue('production_id') && (
-                        <Form.Item
-                            name="production_selected_cate"
-                        // rules={[{ required: true, message: '请选择分类!' }]}
-                        >
-                            <Select placeholder="请选择分类" mode='multiple' onChange={onSelectCate} style={{ flex: 1 }} disabled={optType === 'edit'}>
-                                {currProductCate.map(d => (
-                                    <Select.Option value={d.category} key={d.category}>{d.category}</Select.Option>
-                                ))}
-                            </Select>
+                    {(form.getFieldValue('production_id') && optType === 'add') && (
+                        <Form.Item>
+                            <Form.Item
+                                name="production_selected_cate"
+                                noStyle
+                            >
+                                <Select placeholder="请选择分类" mode='multiple' onChange={onSelectCate} style={{ width: '85%' }}>
+                                    {currProductCate.map(d => (
+                                        <Select.Option value={d.category} key={d.category}>{d.category}</Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Button type="primary" onClick={openAddCateDrawer} style={{ marginLeft: 16 }}>
+                                添加分类
+                            </Button>
+
                         </Form.Item>
                     )}
-
-                    {/* <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Select placeholder="请选择分类" mode='multiple' onChange={onSelectCate} style={{ flex: 1 }}>
-                            {currProductCate.map(d => (
-                                <Select.Option value={d.category} key={d.category}>{d.category}</Select.Option>
-                            ))}
-                        </Select>
-                        <div style={{ marginLeft: 16 }}>
-                            <Button type="primary" onClick={openAddCateDrawer}>
-                                添加分类
-                                    </Button>
-                        </div>
-                    </div> */}
 
                     {cataData.length > 0 && (
                         <FormItem>
