@@ -58,6 +58,24 @@ export const goodsApi: ApiInterface[] = [
         }
     },
     {
+        name: "production.goods.update",
+        descriptions: "",
+        servers: ["crm-pc", 'test'],
+        type: api.UnAuthorizationApi,
+        request: [
+            { attr: 'goods_info', type: fields.StringField },
+            { attr: 'goods_id', type: fields.NumberField },
+        ],
+        response: [],
+        mock: {
+            success: {},
+            failure: {
+                code: '9999',
+                msg: '获取数据失败',
+            }
+        }
+    },
+    {
         name: "production.goods.get",
         descriptions: "",
         servers: ["crm-pc", 'test'],
@@ -255,6 +273,40 @@ export const goodsApi: ApiInterface[] = [
         type: api.UnAuthorizationApi,
         request: [
             { attr: 'major_id', type: fields.NumberField },
+        ],
+        response: [],
+        mock: {
+            success: {},
+            failure: {
+                code: '9999',
+                msg: '获取数据失败',
+            }
+        }
+    },
+    {
+        name: "production.goods.remove",
+        descriptions: "",
+        servers: ["crm-pc", 'test'],
+        type: api.UnAuthorizationApi,
+        request: [
+            { attr: 'goods_id', type: fields.NumberField },
+        ],
+        response: [],
+        mock: {
+            success: {},
+            failure: {
+                code: '9999',
+                msg: '获取数据失败',
+            }
+        }
+    },
+    {
+        name: "production.goods.setuse",
+        descriptions: "",
+        servers: ["crm-pc", 'test'],
+        type: api.UnAuthorizationApi,
+        request: [
+            { attr: 'goods_id', type: fields.NumberField },
         ],
         response: [],
         mock: {

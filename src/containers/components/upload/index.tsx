@@ -32,7 +32,7 @@ interface Iprops {
     onChange: any
     defaultFileList: any
     disabled?: boolean
-    defaultImgs?: string[]
+    fileList?: string[]
 }
 
 const App: React.FC<Iprops> = (props, ref) => {
@@ -99,9 +99,9 @@ const App: React.FC<Iprops> = (props, ref) => {
                 status: 'done',
                 url: `${imgUrlPrefix}${result.file_paths[0]}`,
             },]
-            console.log('list---------->>>',list)
+            console.log('list---------->>>', list)
             setFileList(list)
-            props.onChange(list)
+            props.onChange(list.map(item => item.url))
         } catch (e) {
             setFileList([...fileList, {
                 uid: makeid(),
@@ -123,7 +123,7 @@ const App: React.FC<Iprops> = (props, ref) => {
         const index = list.findIndex(item => item.uid === file.uid)
         list.splice(index, 1)
         setFileList(list)
-        props.onChange(list)
+        props.onChange(list.map(item => item.url))
     }
 
 
@@ -135,10 +135,10 @@ const App: React.FC<Iprops> = (props, ref) => {
     })
 
     const getDefaultImgs = () => {
-        if (!(props.defaultImgs && props.defaultImgs.length > 0)) {
+        if (!(props.fileList && props.fileList.length > 0)) {
             return []
         }
-        const list = props.defaultImgs.map(item => {
+        const list = props.fileList.map(item => {
             return {
                 uid: makeid(),
                 name: item,

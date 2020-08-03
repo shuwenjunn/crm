@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Form, Input, Button, Table, Select } from 'antd'
+import { Form, Input, Button, Table, Select, Popconfirm, Switch } from 'antd'
 import { apiRouter } from 'common/api'
 import SetGoodsDrawer from './setGoodsDrawer';
 import ImgPreview from 'containers/components/imgPreview';
@@ -54,6 +54,35 @@ const Page = () => {
     const refreshData = () => {
         fetchTableData(pagination.current)
     }
+
+    const removeTableItem = async (id: number) => {
+        setLoading(true)
+        try {
+            await apiRouter.router('crm-pc', 'production.goods.remove').request({
+                goods_id: id
+            })
+            refreshData()
+        } catch (error) {
+            console.log('error------->>', error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const onChangeStatus = async (id: number) => {
+        setLoading(true)
+        try {
+            await apiRouter.router('crm-pc', 'production.goods.setuse').request({
+                goods_id: id
+            })
+            refreshData()
+        } catch (error) {
+            console.log('error------->>', error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
 
     const columns = [
         {
@@ -142,13 +171,26 @@ const Page = () => {
             }
         },
         {
+            title: '上下架',
+            dataIndex: 'use_status',
+            width: 150,
+            render: (text, record) => (
+                <Switch
+                    checkedChildren="上架"
+                    unCheckedChildren="下架"
+                    checked={text ? true : false}
+                    onChange={() => onChangeStatus(record.id)}
+                />
+            )
+        },
+        {
             title: '创建时间',
             dataIndex: 'create_time',
         },
         {
             title: '操作',
             dataIndex: 'opt',
-            render: (_, record: unknown) => {
+            render: (_, record: any) => {
                 return (
                     <span>
                         <a
@@ -160,7 +202,12 @@ const Page = () => {
                             编辑
                         </a>
                         &nbsp;
-                        <a>删除</a>
+                        <Popconfirm
+                            title="你确定删除商品吗?"
+                            onConfirm={() => removeTableItem(record.id)}
+                        >
+                            <a>删除</a>
+                        </Popconfirm>
                     </span>
                 )
             }
