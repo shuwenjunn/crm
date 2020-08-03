@@ -58,7 +58,7 @@ const App: React.FC<Iprops> = (props, ref) => {
         try {
             const apiName = optType === 'add' ? 'university.school.add' : 'university.school.update'
             values.is_hot = values.is_hot ? true : false
-            values.logo_url = values.logo_url[0].url.replace(imgUrlPrefix, '')
+            values.logo_url = values.logo_url[0]
             await apiRouter.router('crm-pc', apiName).request({
                 school_info: JSON.stringify(values),
                 school_id: record.id

@@ -128,7 +128,7 @@ const Page = () => {
                         render: (text) => {
                             return (
                                 <ImgPreview
-                                    url={`${imgUrlPrefix}${text}`}
+                                    url={text.indexOf('http') > -1 ? text : `${imgUrlPrefix}${text}`}
                                     title={'学校logo'}
                                     customerStyle={{
                                         width: 88,
@@ -153,7 +153,7 @@ const Page = () => {
                     {
                         title: '是否热门',
                         dataIndex: 'is_hot',
-                        render:(text,record)=>text?'是':'否'
+                        render: (text, record) => text ? '是' : '否'
                     },
                     {
                         title: '创建时间',
@@ -175,11 +175,11 @@ const Page = () => {
                                     </a>
                                     &nbsp;
                                     <Popconfirm
-                                        title={`你确定${record.is_hot?'取消置顶':'置顶'}学校吗?`}
+                                        title={`你确定${record.is_hot ? '取消置顶' : '置顶'}学校吗?`}
                                         onConfirm={() => setTop(record.id)}
                                     >
-                                        
-                                        <a>{record.is_hot?'取消置顶':'置顶'}</a>
+
+                                        <a>{record.is_hot ? '取消置顶' : '置顶'}</a>
                                     </Popconfirm>
                                     &nbsp;
                                     <Popconfirm

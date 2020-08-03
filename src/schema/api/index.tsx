@@ -8,6 +8,7 @@ import { productApi } from './product';
 import { staffApi } from './staff';
 import { goodsApi } from './goods';
 import { smsApi } from './sms';
+import { orderApi } from './order';
 
 
 export const apiConfig = [
@@ -18,4 +19,5 @@ export const apiConfig = [
     ...goodsApi,
     ...productApi,
     ...smsApi,
+    ...orderApi,
 ]

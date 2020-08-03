@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Form, Input, Button, Table, Popconfirm } from 'antd'
 import { apiRouter } from 'common/api'
-import SettingDrawer from './settingDrawer';
+import DetailDrawer from './detailDrawer';
 import ImgPreview from 'containers/components/imgPreview';
 import GoodsItem from './components/goodsItem'
 import { serverConfig } from 'schema/server'
+import './index.less'
+import { ClockCircleOutlined, OrderedListOutlined, AppstoreAddOutlined } from '@ant-design/icons'
 
 const imgUrlPrefix = serverConfig.filter(it => it.flag === 'file')[0].url.replace('/interface/', '')
 
@@ -35,7 +37,7 @@ const Page = () => {
     const fetchTableData = async (current = 1) => {
         setLoading(true)
         try {
-            const result = await apiRouter.router('crm-pc', 'university.major.search').request({
+            const result = await apiRouter.router('crm-pc', 'order.search').request({
                 search_info: JSON.stringify(searchInfo),
                 current_page: current
             })
@@ -51,7 +53,7 @@ const Page = () => {
     const removeTableItem = async (id: number) => {
         setLoading(true)
         try {
-            await apiRouter.router('crm-pc', 'university.major.remove').request({
+            await apiRouter.router('crm-pc', 'order.remove').request({
                 major_id: id
             })
             refreshData()
@@ -65,7 +67,7 @@ const Page = () => {
     const setTop = async (id: number) => {
         setLoading(true)
         try {
-            await apiRouter.router('crm-pc', 'university.major.settop').request({
+            await apiRouter.router('crm-pc', 'order.settop').request({
                 major_id: id
             })
             refreshData()
@@ -80,111 +82,27 @@ const Page = () => {
         fetchTableData(pagination.current)
     }
 
+    const statusMap = {
+        order_launched: { text: '已下单' },
+        payment_finished: { text: '已支付' },
+        delivery_finished: { text: '已发货' },
+        order_closed: { text: '订单关闭' },
+        order_finished: { text: '已完成' },
+    }
+
     return (
         <div>
-            <SettingDrawer
-                title={drawerTitle}
+            <DetailDrawer
+                title={'订单详情'}
                 refreshData={refreshData}
                 ref={drawerRef}
-            />
-
-            <GoodsItem
-                thumbnail='https://img3.doubanio.com/view/celebrity/s_ratio_celebrity/public/p1513067217.13.webp'
-                footer={(
-                    <div>
-                        <Button
-                            style={{ margin: '0 8px' }}
-                            type="primary"
-                            onClick={() => {
-                                setDrawerTitle('添加专业');
-                                (drawerRef.current as any).showDrawer({}, 'add')
-                            }}
-                        >
-                            添加专业
-                        </Button>
-                        <Button
-                            style={{ margin: '0 8px' }}
-                            type="primary"
-                            onClick={() => {
-                                setDrawerTitle('添加专业');
-                                (drawerRef.current as any).showDrawer({}, 'add')
-                            }}
-                        >
-                            添加专业
-                        </Button>
-                    </div>
-                )}
-                goodsDescData={
-                    [
-                        {
-                            children: [
-                                {
-                                    label: '总金额',
-                                    value: '8000.00',
-                                },
-                                {
-                                    label: '实付款',
-                                    value: '8000.00',
-                                },
-                                {
-                                    label: '总金额',
-                                    value: '8000.00',
-                                },
-                            ],
-                            customStyle: {
-                                height: 20,
-                                marginBottom: 8
-                            }
-                        },
-                        {
-                            children: [
-                                {
-                                    label: '总金额',
-                                    value: '8000.00',
-                                },
-                                {
-                                    label: '实付款',
-                                    value: '8000.00',
-                                },
-                                {
-                                    label: '总金额',
-                                    value: '8000.00',
-                                },
-                            ],
-                            customStyle: {
-                                height: 20,
-                                marginBottom: 8
-                            }
-                        },
-                        {
-                            children: [
-                                {
-                                    label: '总金额',
-                                    value: '8000.00',
-                                },
-                                {
-                                    label: '实付款',
-                                    value: '8000.00',
-                                },
-                                {
-                                    label: '总金额',
-                                    value: '8000.00',
-                                },
-                            ],
-                            customStyle: {
-                                height: 20,
-                                marginBottom: 8
-                            }
-                        },
-                    ]
-                }
             />
 
             <Form form={form} name="search" layout="inline" onFinish={onFinish}>
                 <FormItem
                     name="name"
                 >
-                    <Input placeholder="请填写专业名称" />
+                    <Input placeholder="请填写订单号" />
                 </FormItem>
                 <FormItem>
                     <Button
@@ -201,7 +119,7 @@ const Page = () => {
                     >
                         重置
                     </Button>
-                    <Button
+                    {/* <Button
                         style={{ margin: '0 8px' }}
                         type="primary"
                         onClick={() => {
@@ -210,27 +128,106 @@ const Page = () => {
                         }}
                     >
                         添加专业
-                    </Button>
+                    </Button> */}
                 </FormItem>
             </Form>
             <Table
                 columns={[
                     {
-                        title: '专业名称',
-                        dataIndex: 'name',
+                        title: '订单信息',
+                        dataIndex: 'order_info',
+                        render: (text, record) => {
+                            return (
+                                <div>
+                                    <div><OrderedListOutlined style={{ fontWeight: 'bold' }} /> {record.number}</div>
+                                    <div><ClockCircleOutlined style={{ fontWeight: 'bold' }} /> {record.create_time}</div>
+                                    <div><AppstoreAddOutlined style={{ fontWeight: 'bold' }} /> {record.source}</div>
+                                    <div><ClockCircleOutlined style={{ fontWeight: 'bold' }} /> {record.last_payment_time}</div>
+                                </div>
+                            )
+                        }
                     },
                     {
-                        title: '是否热门',
-                        dataIndex: 'is_hot',
-                        render: (text, record) => text ? '是' : '否'
+                        title: '商品信息',
+                        dataIndex: 'order_info',
+                        render: (text, record) => {
+                            return record.snapshoot_list.map(item => {
+                                return (
+                                    <div key={item.id}>
+                                        <div className='item'>
+                                            <div className="label">商品：</div>
+                                            <div className="value">{item.title}</div>
+                                        </div>
+                                        <div className='item'>
+                                            <div className="label">品牌：</div>
+                                            <div className="value">{item.brand_name}</div>
+                                        </div>
+                                        <div className='item'>
+                                            <div className="label">产品：</div>
+                                            <div className="value">{item.production_name}</div>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
                     },
                     {
-                        title: '专业描述',
-                        dataIndex: 'content',
+                        title: '金额',
+                        dataIndex: 'amount',
+                        render: (text, record) => {
+                            return (
+                                <div>
+                                    <div className='item'>
+                                        <div className="label">总额：</div>
+                                        <div className="value">{(record.strike_price / 100).toFixed(2)}</div>
+                                    </div>
+                                    <div className='item'>
+                                        <div className="label">实付：</div>
+                                        <div className="value">{(record.actual_amount / 100).toFixed(2)}</div>
+                                    </div>
+                                </div>
+                            )
+                        }
                     },
                     {
-                        title: '创建时间',
-                        dataIndex: 'create_time',
+                        title: '状态',
+                        dataIndex: 'status',
+                        render: (text, record) => {
+                            return (
+                                <div>
+                                    <div className='item'>
+                                        <div className="label">订单状态：</div>
+                                        <div className="value">{statusMap[record.status].text}</div>
+                                    </div>
+                                    <div className='item'>
+                                        <div className="label">订单售后：</div>
+                                        <div className="value">暂无</div>
+                                    </div>
+                                </div>
+                            )
+                        }
+                    },
+                    {
+                        title: '买家信息',
+                        dataIndex: 'buyer_info',
+                        render: (text, record) => {
+                            return (
+                                <div>
+                                    <div className='item'>
+                                        <div className="label">手机：</div>
+                                        <div className="value">{record.re_phone}</div>
+                                    </div>
+                                    <div className='item'>
+                                        <div className="label">姓名：</div>
+                                        <div className="value">{record.re_name}</div>
+                                    </div>
+                                </div>
+                            )
+                        }
+                    },
+                    {
+                        title: '订单归属',
+                        dataIndex: 'order_owner',
                     },
                     {
                         title: '操作',
@@ -244,23 +241,8 @@ const Page = () => {
                                             (drawerRef.current as any).showDrawer(record, 'edit')
                                         }}
                                     >
-                                        编辑
+                                        详情
                                     </a>
-                                    &nbsp;
-                                    <Popconfirm
-                                        title={`你确定${record.is_hot ? '取消置顶' : '置顶'}专业吗?`}
-                                        onConfirm={() => setTop(record.id)}
-                                    >
-
-                                        <a>{record.is_hot ? '取消置顶' : '置顶'}</a>
-                                    </Popconfirm>
-                                    &nbsp;
-                                    <Popconfirm
-                                        title="你确定删除专业吗?"
-                                        onConfirm={() => removeTableItem(record.id)}
-                                    >
-                                        <a>删除</a>
-                                    </Popconfirm>
                                 </span>
                             )
                         }
