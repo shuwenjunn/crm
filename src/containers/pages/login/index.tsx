@@ -82,7 +82,7 @@ export class Login extends React.PureComponent<LoginProps> {
                     <h2>{config.name}</h2>
                     <Form.Item
                         name="username"
-                        rules={[{ required: true, message: 'Please input your Username!' }]}
+                        rules={[{ required: true, message: '请输入账号' }]}
                     >
                         <Input
                             prefix={<UserOutlined className="site-form-item-icon" />}
@@ -92,7 +92,7 @@ export class Login extends React.PureComponent<LoginProps> {
                     </Form.Item>
                     <Form.Item
                         name="password"
-                        rules={[{ required: true, message: 'Please input your Password!' }]}
+                        rules={[{ required: true, message: '请输入密码' }]}
                     >
                         <Input
                             prefix={<LockOutlined className="site-form-item-icon" />}

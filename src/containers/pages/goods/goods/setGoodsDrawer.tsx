@@ -1,11 +1,12 @@
 import React, { useState, useImperativeHandle, forwardRef, useEffect, useRef } from 'react';
-import { Drawer, Button, Form, Input, Select, Checkbox, Table, Switch, message } from 'antd';
+import { Drawer, Button, Form, Input, Select, Checkbox, Table, Switch, message, InputNumber } from 'antd';
 import { apiRouter } from 'common/api'
 import './setGoodsDrawer.less'
 import CustomUpload from 'containers/components/upload'
 import useSearchAll from 'containers/components/useSearchAll'
 import AddCateDrawer from '../../product/product/addCateDrawer'
 import _ from 'lodash'
+import { isMoney } from 'common/utils/tools'
 
 const FormItem = Form.Item
 
@@ -269,6 +270,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 key: skuData[i].join('&'),
                 isRemove: false
             }
+            // form.setFieldsValue({ [`${obj.key}__price`]: form.getFieldValue('market_price') })
             for (let j in skuData[i]) {
                 const skuIt = skuData[i][j]
                 for (let k in cataData) {
@@ -362,6 +364,11 @@ const App: React.FC<Iprops> = (props, ref) => {
             ...currProductCate,
             obj
         ])
+    }
+
+    const limitDecimals = (value) => {
+        console.log(value)
+        return value.toString().replace(/^(0+)|[^\d]+/g, '')
     }
 
     return (
@@ -466,7 +473,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 >
                     <FormItem
                         name="market_price"
-                        rules={[{ required: true, message: '请输入统一价!' }]}
+                        rules={[{ required: true, message: '请输入统一价!' }, { validator: isMoney }]}
                     >
                         <Input placeholder="统一价" type={'number'} />
                     </FormItem>
@@ -507,7 +514,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                                             style={{ marginBottom: 0 }}
                                             rules={[{ required: !record.isRemove, message: '请填写价格!' }]}
                                         >
-                                            <Input disabled={record.isRemove} placeholder="价格" type={'number'} />
+                                            <InputNumber min={0} disabled={record.isRemove} placeholder="价格" step={1} />
                                         </FormItem>
                                     )
                                 }, {
@@ -517,9 +524,12 @@ const App: React.FC<Iprops> = (props, ref) => {
                                         <FormItem
                                             name={`${record.key}__count`}
                                             style={{ marginBottom: 0 }}
-                                            rules={[{ required: !record.isRemove, message: '请填写数量!' }]}
+                                            rules={[{
+                                                required: !record.isRemove,
+                                                message: '请输入库存数量'
+                                            }]}
                                         >
-                                            <Input disabled={record.isRemove} placeholder="数量" type={'number'} />
+                                            <InputNumber min={1} disabled={record.isRemove} placeholder="数量" step={1} formatter={limitDecimals} parser={limitDecimals} />
                                         </FormItem>
                                     )
                                 }, {
