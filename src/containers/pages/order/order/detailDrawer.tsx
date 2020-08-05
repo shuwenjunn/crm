@@ -47,7 +47,7 @@ const App: React.FC<Iprops> = (props, ref) => {
 
     const onClose = () => {
         form.resetFields()
-        props.refreshData()
+        // props.refreshData()
         setVisible(false)
     }
 
@@ -125,9 +125,12 @@ const App: React.FC<Iprops> = (props, ref) => {
             />
             <div style={{ borderBottom: '1px solid #EEEEEE', marginBottom: 8 }}></div>
 
-            <SubTitle
-                title={'订单信息'}
-            />
+            <div style={{ marginBottom: 8 }}>
+                <SubTitle
+                    title={'订单信息'}
+                />
+            </div>
+
             <DescribeCard
                 bordered={true}
                 data={
@@ -180,96 +183,99 @@ const App: React.FC<Iprops> = (props, ref) => {
                     ]
                 }
             />
-            {data.snapshoot_list.map(item => (
-                <GoodsItem
-                    key={item.id}
-                    thumbnail={item.show_image}
-                    goodsDescData={
-                        [
-                            {
-                                children: [
-                                    {
-                                        label: '商品',
-                                        value: item.title,
-                                    },
-                                    {
-                                        label: '学校',
-                                        value: item.school_name,
-                                    },
-                                    {
-                                        label: '属性',
-                                        value: '暂无数据',
-                                    },
-                                ],
-                                customStyle: {
-                                    height: 20,
-                                    marginBottom: 8
-                                }
-                            },
-                            {
-                                children: [
-                                    {
-                                        label: '品牌',
-                                        value: item.brand_name
-                                    },
-                                    {
-                                        label: '专业',
-                                        value: item.major_name
-                                    },
-                                    {
-                                        label: '价格',
-                                        value: (item.sale_price / 100).toFixed(2)
-                                    },
-                                ],
-                                customStyle: {
-                                    height: 20,
-                                    marginBottom: 8
-                                }
-                            },
-                            {
-                                children: [
-                                    {
-                                        label: '产品',
-                                        value: item.production_name,
-                                    },
-                                    {
-                                        label: '学制',
-                                        value: durationMap[item.duration],
-                                    },
-                                    {
-                                        label: '状态',
-                                        value: '暂无数据',
-                                    },
-                                ],
-                                customStyle: {
-                                    height: 20,
-                                    marginBottom: 8
-                                }
-                            },
-                            {
-                                children: [
-                                    {
-                                        label: '数量',
-                                        value: 'x1',
-                                    },
-                                    {
-                                        label: '发货',
-                                        value: '暂无数据',
-                                    },
-                                    {
-                                        label: '',
-                                        value: '',
-                                    },
-                                ],
-                                customStyle: {
-                                    height: 20,
-                                    marginBottom: 8
-                                }
-                            },
-                        ]
-                    }
-                />
-            ))}
+
+            <div style={{ marginTop: 8 }}>
+                {data.snapshoot_list.map(item => (
+                    <GoodsItem
+                        key={item.id}
+                        thumbnail={item.show_image || 'https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png'}
+                        goodsDescData={
+                            [
+                                {
+                                    children: [
+                                        {
+                                            label: '商品',
+                                            value: item.title,
+                                        },
+                                        {
+                                            label: '学校',
+                                            value: item.school_name,
+                                        },
+                                        {
+                                            label: '属性',
+                                            value: item.remark,
+                                        },
+                                    ],
+                                    customStyle: {
+                                        height: 20,
+                                        marginBottom: 8
+                                    }
+                                },
+                                {
+                                    children: [
+                                        {
+                                            label: '品牌',
+                                            value: item.brand_name
+                                        },
+                                        {
+                                            label: '专业',
+                                            value: item.major_name
+                                        },
+                                        {
+                                            label: '价格',
+                                            value: (item.sale_price / 100).toFixed(2)
+                                        },
+                                    ],
+                                    customStyle: {
+                                        height: 20,
+                                        marginBottom: 8
+                                    }
+                                },
+                                {
+                                    children: [
+                                        {
+                                            label: '产品',
+                                            value: item.production_name,
+                                        },
+                                        {
+                                            label: '学制',
+                                            value: durationMap[item.duration],
+                                        },
+                                        {
+                                            label: '状态',
+                                            value: '暂无数据',
+                                        },
+                                    ],
+                                    customStyle: {
+                                        height: 20,
+                                        marginBottom: 8
+                                    }
+                                },
+                                {
+                                    children: [
+                                        {
+                                            label: '数量',
+                                            value: 'x1',
+                                        },
+                                        {
+                                            label: '发货',
+                                            value: '暂无数据',
+                                        },
+                                        {
+                                            label: '',
+                                            value: '',
+                                        },
+                                    ],
+                                    customStyle: {
+                                        height: 20,
+                                        marginBottom: 8
+                                    }
+                                },
+                            ]
+                        }
+                    />
+                ))}
+            </div>
 
         </Drawer>
     )

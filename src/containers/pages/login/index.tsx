@@ -14,6 +14,7 @@ import { RootState, loginRedux } from 'reduxes';
 import { TokenEnum, TokenConstant } from 'common/utils/persistence';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { hex_md5 } from "common/utils/security/CryptoMd5"
+import IpconfigModal from 'containers/components/tools'
 
 import './index.less';
 
@@ -73,6 +74,7 @@ export class Login extends React.PureComponent<LoginProps> {
     render() {
         return (
             <div id="login-component">
+                <IpconfigModal/>
                 <Form
                     name="normal_login"
                     className="login-form"

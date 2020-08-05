@@ -2,11 +2,16 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Form, Input, Button, Table, Popconfirm } from 'antd'
 import { apiRouter } from 'common/api'
 import DetailDrawer from './detailDrawer';
-import ImgPreview from 'containers/components/imgPreview';
-import GoodsItem from './components/goodsItem'
 import { serverConfig } from 'schema/server'
+import { formatSearchValue } from 'common/utils/tools'
 import './index.less'
 import { ClockCircleOutlined, OrderedListOutlined, AppstoreAddOutlined } from '@ant-design/icons'
+import fukuanIcon from './imgs/fukuan.png'
+import laiyuanIcon from './imgs/laiyuan.png'
+import shijianIcon from './imgs/shijian.png'
+import dingdanIcon from './imgs/dingdan.png'
+
+console.log('fukuanIcon', fukuanIcon)
 
 const imgUrlPrefix = serverConfig.filter(it => it.flag === 'file')[0].url.replace('/interface/', '')
 
@@ -17,16 +22,16 @@ const Page = () => {
     const [form] = Form.useForm()
 
     const [searchInfo, setSearchInfo] = useState({})
-    const [pagination, setPagination] = useState<any>({ showQuickJumper: true, current: 1 })
+    const [pagination, setPagination] = useState<any>({ showQuickJumper: false, current: 1 })
     const [data, setData] = useState<any[]>([])
     const [drawerTitle, setDrawerTitle] = useState('')
     const [loading, setLoading] = useState(false)
 
 
     const onFinish = (values: any) => {
-        setPagination({ showQuickJumper: true, current: 1 })
+        setPagination({ showQuickJumper: false, current: 1 })
         setSearchInfo({
-            ...values,
+            ...formatSearchValue(values),
         })
     }
 
@@ -100,7 +105,7 @@ const Page = () => {
 
             <Form form={form} name="search" layout="inline" onFinish={onFinish}>
                 <FormItem
-                    name="name"
+                    name="number"
                 >
                     <Input placeholder="请填写订单号" />
                 </FormItem>
@@ -139,10 +144,10 @@ const Page = () => {
                         render: (text, record) => {
                             return (
                                 <div>
-                                    <div><OrderedListOutlined style={{ fontWeight: 'bold' }} /> {record.number}</div>
-                                    <div><ClockCircleOutlined style={{ fontWeight: 'bold' }} /> {record.create_time}</div>
-                                    <div><AppstoreAddOutlined style={{ fontWeight: 'bold' }} /> {record.source}</div>
-                                    <div><ClockCircleOutlined style={{ fontWeight: 'bold' }} /> {record.last_payment_time}</div>
+                                    <div><img src={dingdanIcon} style={{width:14}} alt=""/> {record.number}</div>
+                                    <div><img src={shijianIcon} style={{width:14}} alt=""/> {record.create_time}</div>
+                                    <div><img src={laiyuanIcon} style={{width:14}} alt=""/> {record.source}</div>
+                                    <div><img src={fukuanIcon} style={{width:14}} alt=""/> {record.last_payment_time}</div>
                                 </div>
                             )
                         }
@@ -165,6 +170,10 @@ const Page = () => {
                                         <div className='item'>
                                             <div className="label">产品：</div>
                                             <div className="value">{item.production_name}</div>
+                                        </div>
+                                        <div className='item'>
+                                            <div className="label">属性：</div>
+                                            <div className="value">{item.remark}</div>
                                         </div>
                                     </div>
                                 )

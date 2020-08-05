@@ -4,7 +4,7 @@ import { apiRouter } from 'common/api'
 import SetGoodsDrawer from './setGoodsDrawer';
 import ImgPreview from 'containers/components/imgPreview';
 import useSearchAll from 'containers/components/useSearchAll'
-
+import {formatSearchValue} from 'common/utils/tools'
 import { serverConfig } from 'schema/server'
 
 const imgUrlPrefix = serverConfig.filter(it => it.flag === 'file')[0].url.replace('/interface/', '')
@@ -16,7 +16,7 @@ const Page = () => {
     const drawerRef = useRef()
     const [form] = Form.useForm()
     const [searchInfo, setSearchInfo] = useState({})
-    const [pagination, setPagination] = useState<any>({ showQuickJumper: true, current: 1 })
+    const [pagination, setPagination] = useState<any>({ showQuickJumper: false, current: 1 })
     const [data, setData] = useState<any[]>([])
     const [drawerTitle, setDrawerTitle] = useState('')
     const [loading, setLoading] = useState(false)
@@ -25,9 +25,9 @@ const Page = () => {
     const allSchool = useSearchAll('university.school.searchall')
 
     const onFinish = (values: any) => {
-        setPagination({ showQuickJumper: true, current: 1 })
+        setPagination({ showQuickJumper: false, current: 1 })
         setSearchInfo({
-            ...values,
+            ...formatSearchValue(values),
         })
     }
 
@@ -83,6 +83,19 @@ const Page = () => {
         }
     }
 
+    const setTop = async (id: number) => {
+        setLoading(true)
+        try {
+            await apiRouter.router('crm-pc', 'production.goods.settop').request({
+                goods_id: id
+            })
+            refreshData()
+        } catch (error) {
+            console.log('error------->>', error)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const columns = [
         {
@@ -178,7 +191,7 @@ const Page = () => {
                 <Switch
                     checkedChildren="上架"
                     unCheckedChildren="下架"
-                    checked={text==='enable' ? true : false}
+                    checked={text === 'enable' ? true : false}
                     onChange={() => onChangeStatus(record.id)}
                 />
             )
@@ -201,6 +214,14 @@ const Page = () => {
                         >
                             编辑
                         </a>
+                        &nbsp;
+                        <Popconfirm
+                            title={`你确定${record.is_hot ? '取消置顶' : '置顶'}该商品吗?`}
+                            onConfirm={() => setTop(record.id)}
+                        >
+
+                            <a>{record.is_hot ? '取消置顶' : '置顶'}</a>
+                        </Popconfirm>
                         &nbsp;
                         <Popconfirm
                             title="你确定删除商品吗?"

@@ -140,7 +140,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                     name="category"
                     rules={[{ required: true, message: '请输入分类名称!' }]}
                 >
-                    <Input placeholder="分类名称" style={{ width: '85%' }} />
+                    <Input placeholder="分类名称" style={{ width: '85%' }} maxLength={8}/>
                 </FormItem>
                 {fields.map((fieldId, index) => (
                     <FormItem
@@ -171,7 +171,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                                 // })
                             ]}
                         >
-                            <Input placeholder="分类属性" style={{ width: '85%' }} />
+                            <Input placeholder="分类属性" style={{ width: '85%' }} maxLength={8}/>
                         </FormItem>
                         {index === fields.length - 1 ? (
                             <span>

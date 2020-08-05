@@ -2,12 +2,12 @@
 
 
 import * as config from '&/config.js';
-import {message} from 'antd';
-import {HttpRequest} from 'common/utils/channel/http';
-import {signatureHelper} from 'common/api/tools';
-import {FieldSetHelper} from 'common/api/fieldSet';
-import {Server} from 'common/api/server'
-import {TokenEnum, TokenConstant} from 'common/utils/persistence';
+import { message } from 'antd';
+import { HttpRequest } from 'common/utils/channel/http';
+import { signatureHelper } from 'common/api/tools';
+import { FieldSetHelper } from 'common/api/fieldSet';
+import { Server } from 'common/api/server'
+import { TokenEnum, TokenConstant } from 'common/utils/persistence';
 
 export abstract class BaseApi {
 
@@ -102,7 +102,8 @@ export abstract class BaseApi {
                 request
             ).then((res) => {
                 console.log("我得到了服务器的结果")
-                let {isSuccess, result} = this._parseResponseHeader(res)
+                let { isSuccess, result } = this._parseResponseHeader(res)
+                console.log('res--->>>>>>>>>>>', res)
                 if (!isSuccess) {
                     message.warn(result.msg)
 
@@ -110,6 +111,9 @@ export abstract class BaseApi {
 
                 } else {
                     result = this.receive(result);
+                    if (result.code === '30007') {
+                        TokenConstant.remove()
+                    }
                 }
                 return result;
             });
@@ -125,18 +129,15 @@ export abstract class BaseApi {
         let request = Object.assign({}, header, extraParams)
         request['sign'] = signatureHelper.getSignature(request)
         let formData = new FormData()
-        console.log('request---->>>>>>>>',request)
         for (let key in request) {
             formData.append(key, request[key])
         }
-        formData.append(fileData.fileName,fileData.fileObj)
-        console.log('formData---->>', formData)
+        formData.append(fileData.fileName, fileData.fileObj)
         return HttpRequest.file(
             this.accessUrl,
             formData
         ).then((res) => {
-            console.log("我得到了服务器的结果")
-            let {isSuccess, result} = this._parseResponseHeader(res)
+            let { isSuccess, result } = this._parseResponseHeader(res)
             if (!isSuccess) {
                 message.warn(result.msg)
                 throw new Error(result.msg);

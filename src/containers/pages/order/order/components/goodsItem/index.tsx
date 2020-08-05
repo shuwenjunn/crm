@@ -26,7 +26,8 @@ const Index: React.FC<Iprops> = (props, ref) => {
     return (
         <div className='goods-item-card'>
             <div className={'goods-info'}>
-                <div className="thumbnail"></div>
+
+                <img className="thumbnail" src={props.thumbnail} />
                 <div className='goods-desc'>
                     <DescribeCard
                         bordered={true}

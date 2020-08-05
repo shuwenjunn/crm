@@ -4,19 +4,18 @@
 import { ServerInterface } from 'common/interface';
 import { serverConfig } from 'schema/server';
 
-
-export class Server implements ServerInterface{
+export class Server implements ServerInterface {
     flag: string;
     description: string;
     url: string;
-    
-    constructor(server: ServerInterface){
+
+    constructor(server: ServerInterface) {
         this.flag = server.flag;
         this.description = server.description;
         this.url = server.url;
     }
 
-    getDescription(): string{
+    getDescription(): string {
         return this.description;
     }
 }
@@ -25,19 +24,19 @@ export class ServerHelper {
 
     serverMap: Map<string, Server>;
 
-    constructor(serverConfig: ServerInterface[]){
+    constructor(serverConfig: ServerInterface[]) {
         this.serverMap = this.initializeServerMap(serverConfig)
     }
 
-    initializeServerMap(serverConfig: ServerInterface[]){
+    initializeServerMap(serverConfig: ServerInterface[]) {
         let serverMap = new Map();
-        for(let server of serverConfig){
+        for (let server of serverConfig) {
             serverMap.set(server.flag, new Server(server));
         }
-        return serverMap; 
+        return serverMap;
     }
 
-    getServerMap(): Map<string, Server>{
+    getServerMap(): Map<string, Server> {
         return this.serverMap;
     }
 
@@ -45,4 +44,4 @@ export class ServerHelper {
 
 
 
-export const servers = (new ServerHelper(serverConfig)).getServerMap().values();
+export const servers = (new ServerHelper(process.env.NODE_ENV == 'development' ? JSON.parse(localStorage.getItem('apiServers')) || serverConfig : serverConfig)).getServerMap().values();

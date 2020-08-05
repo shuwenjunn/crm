@@ -24,7 +24,7 @@ const Page = () => {
     const [form] = Form.useForm()
 
     const [searchInfo, setSearchInfo] = useState({})
-    const [pagination, setPagination] = useState<any>({showQuickJumper: true, current: 1})
+    const [pagination, setPagination] = useState<any>({showQuickJumper: false, current: 1})
     const [data, setData] = useState<any[]>([])
     const [loading, setLoading] = useState(false)
 
@@ -42,7 +42,7 @@ const Page = () => {
     }
 
     const onFinish = (values: any) => {
-        setPagination({showQuickJumper: true, current: 1})
+        setPagination({showQuickJumper: false, current: 1})
         const params = {
             ...values,
             ...handleRangePicker(values.create_time, 'YYYY-MM-DD HH:mm:ss', 'create_time__gte', 'create_time__lte')

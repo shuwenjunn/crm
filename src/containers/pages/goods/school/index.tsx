@@ -14,14 +14,14 @@ const Page = () => {
     const [form] = Form.useForm()
 
     const [searchInfo, setSearchInfo] = useState({})
-    const [pagination, setPagination] = useState<any>({ showQuickJumper: true, current: 1 })
+    const [pagination, setPagination] = useState<any>({ showQuickJumper: false, current: 1 })
     const [data, setData] = useState<any[]>([])
     const [drawerTitle, setDrawerTitle] = useState('')
     const [loading, setLoading] = useState(false)
 
 
     const onFinish = (values: any) => {
-        setPagination({ showQuickJumper: true, current: 1 })
+        setPagination({ showQuickJumper: false, current: 1 })
         setSearchInfo({
             ...values,
         })
@@ -151,7 +151,7 @@ const Page = () => {
                         }
                     },
                     {
-                        title: '是否热门',
+                        title: '是否置顶',
                         dataIndex: 'is_hot',
                         render: (text, record) => text ? '是' : '否'
                     },

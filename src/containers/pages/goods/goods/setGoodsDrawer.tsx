@@ -30,6 +30,7 @@ const App: React.FC<Iprops> = (props, ref) => {
     const [currProductCate, setCurrProductCate] = useState([]) // 当前选择的产品所对应的所有的分类
     const [cataData, setCataData] = useState<any[]>([]) // 可供勾选的分类 原数据
     const [loading, setLoading] = useState(false)
+    const [removeKeys, setRemoveKeys] = useState<string[]>([])
     const addCateRef = useRef()
     const [form] = Form.useForm()
 
@@ -47,6 +48,7 @@ const App: React.FC<Iprops> = (props, ref) => {
         setCategory([])
         setCategory({})
         setCurrProductCate([])
+        setRemoveKeys([])
         setCataData([])
         form.resetFields()
     }
@@ -194,9 +196,22 @@ const App: React.FC<Iprops> = (props, ref) => {
             }
             obj.specification_value_list = specification_value_list
             if (optType === 'edit') {
-                obj.id = record.specification_list[i].id
+                console.log('obj----->>>', obj)
+                // obj.id = record.specification_list[i].id
             }
             specification_list.push(obj)
+
+            let newList = specification_list
+            let oldList = record.specification_list
+            for (let i in newList) {
+                for (let j in oldList) {
+                    if (_.isEqual(oldList[j].specification_value_list, newList[i].specification_value_list)) {
+                        newList[i].id = oldList[j].id
+                    }
+                }
+            }
+            console.log('params---->>>', specification_list)
+            console.log('record---->>>', record.specification_list)
         }
         const goods_info: any = {
             title: values.title,//char # 标题
@@ -279,6 +294,13 @@ const App: React.FC<Iprops> = (props, ref) => {
                     }
                 }
             }
+            if (optType === 'edit') {
+                if (!form.getFieldValue(`${obj.key}__price`) && form.getFieldValue(`${obj.key}__price`) !== 0) {
+                    continue
+                }
+
+            }
+            obj.isRemove = removeKeys.includes(obj.key)
             data.push(obj)
         }
         setTableData(data)
@@ -317,6 +339,16 @@ const App: React.FC<Iprops> = (props, ref) => {
         const index = data.findIndex((item: any) => item.key === record.key)
         data[index].isRemove = isRemove
         setTableData(data)
+
+        const removeData = [...removeKeys]
+        if (isRemove) {
+            removeData.push(record.key)
+        } else {
+            const index = removeData.findIndex(item => item === record.key)
+            removeData.splice(index, 1)
+        }
+
+        setRemoveKeys(removeData)
     }
 
     const onSelectProduct = (id: number) => {
@@ -336,6 +368,7 @@ const App: React.FC<Iprops> = (props, ref) => {
         const cataData = []
         for (let i in value) {
             for (let j in currProductCate) {
+
                 if (currProductCate[j].category === value[i]) {
                     cataData.push({
                         key: value[i],
@@ -343,6 +376,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                         children: currProductCate[j].attribute_list.map((item: { name: string }) => item.name)
                     })
                 }
+
             }
         }
         setCataData(cataData)
@@ -368,7 +402,14 @@ const App: React.FC<Iprops> = (props, ref) => {
 
     const limitDecimals = (value) => {
         console.log(value)
+        if (value === '0') {
+            return 0
+        }
         return value.toString().replace(/^(0+)|[^\d]+/g, '')
+    }
+
+    const onInputPrice = (e) => {
+        console.log(e)
     }
 
     return (
@@ -475,7 +516,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                         name="market_price"
                         rules={[{ required: true, message: '请输入统一价!' }, { validator: isMoney }]}
                     >
-                        <Input placeholder="统一价" type={'number'} />
+                        <Input placeholder="统一价" type={'number'} onChange={onInputPrice} />
                     </FormItem>
                     {columns.length > 0 && (
                         <FormItem
@@ -514,7 +555,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                                             style={{ marginBottom: 0 }}
                                             rules={[{ required: !record.isRemove, message: '请填写价格!' }]}
                                         >
-                                            <InputNumber min={0} disabled={record.isRemove} placeholder="价格" step={1} />
+                                            <InputNumber min={0} disabled={record.isRemove} placeholder="价格" step={1} style={{ width: 100 }} />
                                         </FormItem>
                                     )
                                 }, {
@@ -529,7 +570,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                                                 message: '请输入库存数量'
                                             }]}
                                         >
-                                            <InputNumber min={1} disabled={record.isRemove} placeholder="数量" step={1} formatter={limitDecimals} parser={limitDecimals} />
+                                            <InputNumber min={0} disabled={record.isRemove} placeholder="数量" step={1} parser={limitDecimals} style={{ width: 100 }} />
                                         </FormItem>
                                     )
                                 }, {

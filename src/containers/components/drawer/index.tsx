@@ -18,7 +18,7 @@ const App: React.FC<DrawerProps> = (props, ref) => {
     const [data, setData] = useState({})
     const [balanceData, setBalanceData] = useState([])
     const [loading, setLoading] = useState({})
-    const [pagination, setPagination] = useState<any>({showQuickJumper: true, current: 1})
+    const [pagination, setPagination] = useState<any>({showQuickJumper: false, current: 1})
 
     const showDrawer = (record: any) => {
         setVisible(true)

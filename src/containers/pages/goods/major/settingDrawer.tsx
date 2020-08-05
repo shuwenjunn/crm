@@ -109,7 +109,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                     <Input.TextArea placeholder="专业描述" />
                 </FormItem>
                 <FormItem
-                    label="是否热门"
+                    label="是否置顶"
                     name="is_hot"
                     valuePropName="checked"
                 >
