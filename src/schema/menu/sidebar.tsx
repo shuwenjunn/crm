@@ -102,4 +102,18 @@ export const sidebarMenu: MenuElementInterface[] = [
 
         ],
     },
+
+    {
+        key: 'merchant',
+        name: '代理商',
+        icon: icons.UsergroupAddOutlined,
+        child: [
+            {
+                key: 'merchant',
+                name: '代理商列表',
+                router: "/merchant",
+            },
+
+        ],
+    },
 ];

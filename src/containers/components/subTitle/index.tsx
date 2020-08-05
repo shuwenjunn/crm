@@ -4,11 +4,13 @@ import './index.less'
 interface DrawerProps {
     title: string
     rightCon?: React.ReactNode
+    // 自定义样式
+    customStyle?: any
 }
 
 const SubTitle: React.FC<DrawerProps> = (props, ref) => {
     return (
-        <div className='sub-title'>
+        <div className='sub-title' style={props.customStyle}>
 
             <div className="sub-title__l">
                 <div className='line'></div>

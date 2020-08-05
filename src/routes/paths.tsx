@@ -18,6 +18,7 @@ import Personal from 'containers/pages/user/personal'
 import ModifiyPassword from 'containers/pages/user/modifiyPassword'
 import Sms from 'containers/pages/sms/sms'
 import Order from 'containers/pages/order/order'
+import Merchant from 'containers/pages/merchant/merchant'
 
 export const paths: RouteConfig[] = [
     {
@@ -92,6 +93,11 @@ export const paths: RouteConfig[] = [
                 path: "/order",
                 exact: true,
                 component: Order as any,
+            },
+            {
+                path: "/merchant",
+                exact: true,
+                component: Merchant as any,
             },
         ]
     },

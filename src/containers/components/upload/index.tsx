@@ -138,6 +138,8 @@ const App: React.FC<Iprops> = (props, ref) => {
         if (!(props.fileList && props.fileList.length > 0)) {
             return []
         }
+
+        console.log('props.fileList-----',props.fileList)
         const list = props.fileList.map(item => {
             return {
                 uid: makeid(),
