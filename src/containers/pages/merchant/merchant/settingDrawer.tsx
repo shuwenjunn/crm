@@ -79,7 +79,7 @@ const App: React.FC<Iprops> = (props, ref) => {
 
     const onClose = () => {
         form.resetFields()
-        props.refreshData()
+      
         setVisible(false)
     }
 
@@ -106,6 +106,7 @@ const App: React.FC<Iprops> = (props, ref) => {
                 agent_info: JSON.stringify(values),
                 agent_id: record.id
             })
+            props.refreshData()
             onClose()
         } catch (error) {
             console.log('error------->>', error)

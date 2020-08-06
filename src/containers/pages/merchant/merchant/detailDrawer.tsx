@@ -133,6 +133,22 @@ const App: React.FC<Iprops> = (props, ref) => {
                             ),
                     },
                     {
+                        label: '营业执照',
+                        value: data.license_picture ? (
+                            <ImgPreview
+                                url={data.license_picture}
+                                title={'公章'}
+                                customerStyle={{
+                                    width: 30,
+                                    height: 30,
+                                    cursor: "pointer"
+                                }}
+                            />
+                        ) : (
+                                null
+                            ),
+                    },
+                    {
                         label: '入驻时间',
                         value: data.create_time,
                     },
